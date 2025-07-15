@@ -1,124 +1,647 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Línea Médica Yolombó: especialistas en diagnóstico cardiorrespiratorio no invasivo. Ecocardiogramas, Holter, MAPA y Espirometría en Antioquia." />
-  <meta name="keywords" content="Línea Médica Yolombó, ecocardiograma, Holter, MAPA, espirometría, diagnóstico cardiológico, diagnóstico neumológico, Yolombó Antioquia" />
-  <meta name="author" content="Línea Médica Yolombó" />
-  <title>Diagnóstico Cardiopulmonar | Línea Médica Yolombó</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Montserrat', sans-serif;
-      margin: 0;
-      background: #f9f9f9;
-      color: #333;
-    }
-    header, footer {
-      background: #004e89;
-      color: #fff;
-      padding: 1rem 2rem;
-    }
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 1rem;
-      padding: 0;
-    }
-    nav ul li a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    section {
-      padding: 3rem 2rem;
-      max-width: 1000px;
-      margin: auto;
-    }
-    ul {
-      padding-left: 1.5rem;
-    }
-    .chatbot {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #004e89;
-      color: white;
-      padding: 1rem;
-      border-radius: 50px;
-      cursor: pointer;
-      z-index: 999;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Tu Compa Ya! v2.0 - Cotizador PRO</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Iconos de Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --sky-600: #0284c7;
+            --slate-800: #1e293b;
+        }
+        html.dark {
+            --sky-600: #38bdf8;
+            --slate-800: #f1f5f9;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            padding-bottom: 90px;
+        }
+        @media (min-width: 1024px) { body { padding-bottom: 0; } }
+        
+        .product-list::-webkit-scrollbar { width: 8px; }
+        .product-list::-webkit-scrollbar-track { background: #f1f5f9; }
+        .product-list::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+        html.dark .product-list::-webkit-scrollbar-track { background: #1e293b; }
+        html.dark .product-list::-webkit-scrollbar-thumb { background: #475569; }
+
+        .banner {
+            height: 200px;
+            background-image: url('https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?q=80&w=2574&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+        /* Animación para el modal */
+        .modal-enter { transform: translateY(100%); }
+        .modal-enter-active { transform: translateY(0); transition: transform 0.3s ease-out; }
+        .modal-leave-active { transform: translateY(100%); transition: transform 0.3s ease-in; }
+        
+        /* Animación Fly-to-cart */
+        .fly-to-cart {
+            position: absolute;
+            font-size: 2rem;
+            z-index: 100;
+            transition: all 0.6s ease-in-out;
+        }
+        /* Animación de pulso para el carrito */
+        .cart-pulse {
+            animation: pulse 0.5s;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+    </style>
+    <script>
+        // Configuración de Tailwind para modo oscuro
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
 </head>
-<body>
-  <header>
-    <h1>Línea Médica Yolombó</h1>
-    <nav>
-      <ul>
-        <li><a href="#inicio">Inicio</a></li>
-        <li><a href="#filosofia">Filosofía</a></li>
-        <li><a href="#servicios">Servicios</a></li>
-        <li><a href="#equipo">Equipo</a></li>
-        <li><a href="#innovacion">Tecnología</a></li>
-        <li><a href="#cobertura">Cobertura</a></li>
-        <li><a href="#contacto">Contacto</a></li>
-      </ul>
-    </nav>
-  </header>
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors duration-300">
+    
+    <div class="banner rounded-b-3xl shadow-lg flex items-center justify-center relative">
+        <div class="absolute inset-0 bg-black opacity-40 rounded-b-3xl"></div>
+        <h1 class="text-5xl md:text-6xl font-extrabold text-white z-10" style="text-shadow: 3px 3px 8px rgba(0,0,0,0.6);">
+            Food Market
+        </h1>
+    </div>
 
-  <section id="inicio">
-    <h2>Bienvenidos</h2>
-    <p>Especialistas en diagnóstico cardiológico y neumológico no invasivo. Cuidamos tu salud con precisión, empatía y tecnología de punta en Yolombó, Antioquia.</p>
-  </section>
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        <header class="mb-4 text-center">
+            <h1 id="main-title" class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">¡Tu Compa Ya!</h1>
+            <p id="main-subtitle" class="text-slate-600 dark:text-slate-400 mt-2">Selecciona productos para agregarlos a tu canasta de compra</p>
+        </header>
 
-  <section id="filosofia">
-    <h2>Filosofía y Valores</h2>
-    <p>Trabajamos con ética, compromiso y cercanía. Nuestro objetivo es brindar atención médica integral, personalizada y confiable a cada paciente.</p>
-  </section>
+        <!-- Controles Globales -->
+        <div class="sticky top-0 z-30 bg-slate-100/80 dark:bg-slate-900/80 backdrop-blur-sm py-4 mb-4">
+            <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+                <!-- Buscador -->
+                <div class="relative w-full md:max-w-xs">
+                    <input type="search" id="search-input" placeholder="Buscar productos..." class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 pl-10 focus:ring-2 focus:ring-sky-500">
+                    <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                </div>
+                <!-- Controles de Idioma, Moneda y Modo Oscuro -->
+                <div class="flex items-center gap-4 bg-white dark:bg-slate-800 p-2 rounded-lg shadow-md">
+                    <select id="language-switcher" class="bg-slate-100 dark:bg-slate-700 border-none rounded-md p-1 font-semibold text-sm focus:ring-2 focus:ring-sky-500"></select>
+                    <select id="currency-switcher" class="bg-slate-100 dark:bg-slate-700 border-none rounded-md p-1 font-semibold text-sm focus:ring-2 focus:ring-sky-500"></select>
+                    <button id="dark-mode-toggle" class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700">
+                        <i class="ph ph-sun text-xl text-yellow-500"></i>
+                        <i class="ph ph-moon hidden text-xl text-sky-400"></i>
+                    </button>
+                </div>
+            </div>
+             <!-- Filtros de Categoría -->
+            <div id="category-filters" class="flex gap-2 justify-center mt-4 overflow-x-auto pb-2"></div>
+        </div>
 
-  <section id="servicios">
-    <h2>Servicios Especializados</h2>
-    <ul>
-      <li><strong>Ecocardiograma Doppler:</strong> Evaluación detallada y en tiempo real de la estructura y función cardíaca.</li>
-      <li><strong>Electrocardiografía Dinámica (Holter):</strong> Registro ambulatorio de 24-48 horas para detectar arritmias.</li>
-      <li><strong>Espirometría:</strong> Prueba funcional respiratoria que evalúa asma, EPOC y capacidad pulmonar.</li>
-      <li><strong>MAPA:</strong> Monitoreo continuo de la presión arterial durante 24 horas.</li>
-      <li><strong>Electrocardiograma de 12 derivaciones:</strong> Estudio de ritmo cardíaco en reposo.</li>
-    </ul>
-  </section>
+        <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-8">
+            <!-- Columna de Productos -->
+            <div class="lg:col-span-2">
+                <div class="bg-white dark:bg-slate-800 p-4 md:p-6 rounded-2xl shadow-lg">
+                    <h2 id="products-title" class="text-xl md:text-2xl font-semibold mb-6 flex items-center"></h2>
+                    <div id="product-list" class="grid grid-cols-2 md:grid-cols-3 gap-4 product-list min-h-[50vh]"></div>
+                </div>
+            </div>
 
-  <section id="equipo">
-    <h2>Nuestro Equipo Médico</h2>
-    <p>Contamos con profesionales certificados en cardiología y neumología. Nuestra experiencia, calidez y compromiso garantizan diagnósticos confiables y atención empática.</p>
-  </section>
+            <!-- Columna de Cotización para Escritorio -->
+            <div class="hidden lg:block lg:col-span-1">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg sticky top-28">
+                    <h2 id="quote-title-desktop" class="text-2xl font-semibold mb-6 flex items-center"></h2>
+                    <div id="cart-items-desktop" class="space-y-4 mb-6 min-h-[150px] max-h-[40vh] overflow-y-auto"></div>
+                    <div id="cart-totals-desktop"></div>
+                    <div id="cart-buttons-desktop" class="mt-6 space-y-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <section id="innovacion">
-    <h2>Innovación y Tecnología</h2>
-    <p>Invertimos continuamente en equipos de última generación y capacitación médica. Nuestro objetivo es mantenernos como líderes en diagnóstico cardiorrespiratorio.</p>
-  </section>
+    <!-- Barra de Carrito Fija para Móvil -->
+    <div id="mobile-cart-bar" class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] flex items-center justify-between">
+        <div>
+            <p id="mobile-total-label" class="text-sm text-slate-500 dark:text-slate-400">Total</p>
+            <p id="mobile-total-amount" class="font-bold text-xl text-slate-800 dark:text-slate-200">$0</p>
+        </div>
+        <button id="view-cart-btn" class="bg-sky-600 text-white font-semibold py-3 px-6 rounded-lg flex items-center gap-2 disabled:bg-sky-300 dark:disabled:bg-sky-800 disabled:cursor-not-allowed">
+            <i id="mobile-cart-icon" class="ph ph-shopping-cart-simple text-xl"></i>
+            <span id="view-cart-label">Ver Carrito</span>
+        </button>
+    </div>
 
-  <section id="cobertura">
-    <h2>Zonas de Cobertura</h2>
-    <p>Prestamos servicios en Yolombó y municipios del Nordeste antioqueño como Yalí, Vegachí, Remedios, Segovia, Zaragoza, Maceo y Cisneros.</p>
-  </section>
+    <!-- Modal de Carrito para Móvil -->
+    <div id="mobile-cart-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40">
+        <div id="modal-content" class="absolute bottom-0 left-0 right-0 bg-slate-100 dark:bg-slate-900 rounded-t-2xl p-4 max-h-[85vh] overflow-y-auto transition-transform duration-300 ease-in-out modal-enter">
+            <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-200 dark:border-slate-700">
+                <h2 id="quote-title-mobile" class="text-2xl font-semibold flex items-center"></h2>
+                <button id="close-modal-btn" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">
+                    <i class="ph ph-x text-3xl"></i>
+                </button>
+            </div>
+            <div id="cart-items-mobile" class="space-y-4 mb-6"></div>
+            <div id="cart-totals-mobile" class="bg-white dark:bg-slate-800 p-4 rounded-xl"></div>
+            <div id="cart-buttons-mobile" class="mt-6 space-y-3"></div>
+        </div>
+    </div>
 
-  <section id="contacto">
-    <h2>Contacto</h2>
-    <p><strong>Dirección:</strong> Calle 20 # 20-183, Yolombó, Antioquia</p>
-    <p><strong>Teléfono:</strong> +57 323 595 7483</p>
-    <p><strong>Email:</strong> lineamedicayolombo@gmail.com</p>
-  </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // --- 1. DATOS Y CONFIGURACIÓN ---
+            const ALL_PRODUCTS = [
+                // Existing
+                { id: 1, name: "Arroz Blanco (1kg)", price: 5500, icon: "🍚", category: "pantry" },
+                { id: 2, name: "Leche Entera (1L)", price: 4200, icon: "🥛", category: "dairy" },
+                { id: 3, name: "Huevos (x30)", price: 18000, icon: "🥚", category: "dairy" },
+                { id: 4, name: "Café Colombiano (500g)", price: 22000, icon: "☕", category: "pantry" },
+                { id: 5, name: "Aceite Vegetal (1L)", price: 15500, icon: "🍾", category: "pantry" },
+                { id: 6, name: "Pan Tajado (550g)", price: 6000, icon: "🍞", category: "bakery" },
+                { id: 7, name: "Queso Campesino (400g)", price: 11000, icon: "🧀", category: "dairy" },
+                { id: 8, name: "Manzanas (1kg)", price: 7500, icon: "🍎", category: "fruits_veg" },
+                { id: 9, name: "Pollo Entero (1kg)", price: 14000, icon: "🍗", category: "meats" },
+                { id: 10, name: "Papas (1kg)", price: 3500, icon: "🥔", category: "fruits_veg" },
+                { id: 11, name: "Tomates (1kg)", price: 4000, icon: "🍅", category: "fruits_veg" },
+                { id: 12, name: "Cebolla (1kg)", price: 3800, icon: "🧅", category: "fruits_veg" },
+                { id: 13, name: "Salmón (200g)", price: 25000, icon: "🐟", category: "meats" },
+                { id: 14, name: "Yogur Griego", price: 8000, icon: "🍦", category: "dairy" },
+                { id: 15, name: "Baguette", price: 4500, icon: "🥖", category: "bakery" },
+                // New Products
+                // Fruits & Veg
+                { id: 16, name: "Banano (1kg)", price: 3200, icon: "🍌", category: "fruits_veg" },
+                { id: 17, name: "Aguacate Hass", price: 4500, icon: "🥑", category: "fruits_veg" },
+                { id: 18, name: "Lechuga Crespa", price: 2500, icon: "🥬", category: "fruits_veg" },
+                { id: 19, name: "Zanahoria (500g)", price: 1800, icon: "🥕", category: "fruits_veg" },
+                { id: 20, name: "Limón (1kg)", price: 4000, icon: "🍋", category: "fruits_veg" },
+                { id: 21, name: "Brócoli", price: 3500, icon: "🥦", category: "fruits_veg" },
+                // Meats
+                { id: 22, name: "Carne Molida (500g)", price: 15000, icon: "🥩", category: "meats" },
+                { id: 23, name: "Chuleta de Cerdo (500g)", price: 12000, icon: "🥓", category: "meats" },
+                { id: 24, name: "Salchichas (x8)", price: 9000, icon: "🌭", category: "meats" },
+                // Dairy
+                { id: 25, name: "Mantequilla (250g)", price: 7500, icon: "🧈", category: "dairy" },
+                { id: 26, name: "Queso Mozzarella (250g)", price: 9500, icon: "🧀", category: "dairy" },
+                { id: 27, name: "Leche Deslactosada (1L)", price: 4800, icon: "🥛", category: "dairy" },
+                // Pantry
+                { id: 28, name: "Pasta Spaghetti (500g)", price: 4500, icon: "🍝", category: "pantry" },
+                { id: 29, name: "Lentejas (500g)", price: 4000, icon: "🫘", category: "pantry" },
+                { id: 30, name: "Frijol Cargamanto (500g)", price: 6500, icon: "🫘", category: "pantry" },
+                { id: 31, name: "Atún en Aceite", price: 5500, icon: "🥫", category: "pantry" },
+                { id: 32, name: "Mayonesa (200g)", price: 6000, icon: "🧴", category: "pantry" },
+                { id: 33, name: "Salsa de Tomate (200g)", price: 4500, icon: "🍅", category: "pantry" },
+                { id: 34, name: "Azúcar (1kg)", price: 5000, icon: "🍬", category: "pantry" },
+                { id: 35, name: "Sal (1kg)", price: 2000, icon: "🧂", category: "pantry" },
+                { id: 36, name: "Harina de Trigo (500g)", price: 3000, icon: "🌾", category: "pantry" },
+                // Bakery
+                { id: 37, name: "Croissant", price: 3500, icon: "🥐", category: "bakery" },
+                { id: 38, name: "Torta de Chocolate (Porción)", price: 8000, icon: "🍰", category: "bakery" },
+                { id: 39, name: "Arepas de Maíz (x5)", price: 4000, icon: "🫓", category: "bakery" },
+                // Drinks
+                { id: 40, name: "Agua Botella (600ml)", price: 2000, icon: "💧", category: "drinks" },
+                { id: 41, name: "Coca-Cola (1.5L)", price: 4500, icon: "🥤", category: "drinks" },
+                { id: 42, name: "Jugo de Naranja (1L)", price: 6000, icon: "🧃", category: "drinks" },
+                { id: 43, name: "Cerveza Nacional (x6)", price: 15000, icon: "🍺", category: "drinks" },
+                { id: 44, name: "Vino Tinto (750ml)", price: 35000, icon: "🍷", category: "drinks" },
+                // Snacks
+                { id: 45, name: "Papas Fritas (Paquete)", price: 3000, icon: "🍟", category: "snacks" },
+                { id: 46, name: "Galletas de Chocolate", price: 2500, icon: "🍪", category: "snacks" },
+                { id: 47, name: "Maní Salado (150g)", price: 4000, icon: "🥜", category: "snacks" },
+                { id: 48, name: "Barra de Chocolate", price: 3500, icon: "🍫", category: "snacks" },
+                // Cleaning
+                { id: 49, name: "Detergente Líquido (1L)", price: 18000, icon: "🧼", category: "cleaning" },
+                { id: 50, name: "Limpiador Multiusos", price: 9000, icon: "✨", category: "cleaning" },
+                { id: 51, name: "Lavaloza Líquido (500ml)", price: 7000, icon: "🍽️", category: "cleaning" },
+                { id: 52, name: "Papel Higiénico (x4)", price: 6000, icon: "🧻", category: "cleaning" },
+                // Personal Care
+                { id: 53, name: "Jabón de Baño", price: 3000, icon: "🚿", category: "personal_care" },
+                { id: 54, name: "Shampoo (400ml)", price: 15000, icon: "🧴", category: "personal_care" },
+                { id: 55, name: "Crema Dental", price: 8000, icon: "🦷", category: "personal_care" },
+                { id: 56, name: "Desodorante", price: 12000, icon: "🌬️", category: "personal_care" },
+                // Frozen
+                { id: 57, name: "Papas a la Francesa (Cong.)", price: 9000, icon: "🍟", category: "frozen" },
+                { id: 58, name: "Helado de Vainilla (1L)", price: 15000, icon: "🍨", category: "frozen" },
+                { id: 59, name: "Pizza Congelada", price: 20000, icon: "🍕", category: "frozen" },
+            ];
 
-  <footer>
-    <p>&copy; 2025 Línea Médica Yolombó | Diagnóstico cardiopulmonar de confianza</p>
-  </footer>
+            const CATEGORIES = {
+                es: { all: "Todos", fruits_veg: "Frutas y Verduras", dairy: "Lácteos y Huevos", meats: "Carnes", pantry: "Despensa", bakery: "Panadería", drinks: "Bebidas", snacks: "Snacks", cleaning: "Limpieza", personal_care: "Cuidado Personal", frozen: "Congelados" },
+                en: { all: "All", fruits_veg: "Fruits & Veg", dairy: "Dairy & Eggs", meats: "Meats", pantry: "Pantry", bakery: "Bakery", drinks: "Beverages", snacks: "Snacks", cleaning: "Cleaning", personal_care: "Personal Care", frozen: "Frozen" }
+            };
 
-  <div class="chatbot" onclick="window.open('https://wa.me/573235957483?text=Hola%2C%20quiero%20agendar%20una%20cita.', '_blank')">
-    💬 Agenda tu cita
-  </div>
+            let exchangeRates = { COP: 1, USD: 0.00025, EUR: 0.00023 };
+
+            const TRANSLATIONS = { /* ... Se define más abajo ... */ };
+
+            // --- ESTADO DE LA APLICACIÓN ---
+            let state = {
+                cart: [],
+                lang: 'es',
+                currency: 'COP',
+                darkMode: false,
+                searchQuery: '',
+                activeCategory: 'all'
+            };
+
+            // --- REFERENCIAS AL DOM ---
+            const dom = { /* ... Se define más abajo ... */ };
+
+            // --- SIMULACIÓN DE API ---
+            const fetchExchangeRates = async () => {
+                // En una app real, aquí se haría un fetch a una API.
+                // Por ahora, simulamos una pequeña demora y devolvemos valores.
+                console.log("Fetching exchange rates...");
+                await new Promise(resolve => setTimeout(resolve, 500));
+                // Simulamos una pequeña variación para mostrar que funciona
+                const newRates = { COP: 1, USD: 0.00025 + Math.random() * 0.00001, EUR: 0.00023 + Math.random() * 0.00001 };
+                console.log("Rates updated:", newRates);
+                return newRates;
+            };
+
+            // --- LÓGICA DE INICIALIZACIÓN ---
+            const init = async () => {
+                // Definir traducciones y elementos del DOM
+                defineDomAndTranslations();
+                
+                // Cargar estado guardado
+                loadState();
+                
+                // Cargar tasas de cambio
+                try {
+                    exchangeRates = await fetchExchangeRates();
+                } catch (error) {
+                    console.error("Failed to fetch exchange rates, using default.", error);
+                }
+
+                // Configurar listeners de eventos
+                setupEventListeners();
+                
+                // Renderizar todo por primera vez
+                updateUI();
+            };
+
+            // --- LÓGICA DE ESTADO (localStorage) ---
+            const saveState = () => {
+                const stateToSave = {
+                    cart: state.cart,
+                    lang: state.lang,
+                    currency: state.currency,
+                    darkMode: state.darkMode
+                };
+                localStorage.setItem('foodMarketState', JSON.stringify(stateToSave));
+            };
+            
+            const loadState = () => {
+                const savedState = JSON.parse(localStorage.getItem('foodMarketState'));
+                if (savedState) {
+                    state = { ...state, ...savedState };
+                }
+                // Aplicar modo oscuro al inicio
+                if (state.darkMode) {
+                    document.documentElement.classList.add('dark');
+                }
+                dom.langSwitcher.value = state.lang;
+                dom.currencySwitcher.value = state.currency;
+            };
+
+            // --- LÓGICA DE RENDERIZADO ---
+            const updateUI = () => {
+                updateTexts();
+                renderProducts();
+                renderCart();
+                updateDarkModeToggle();
+            };
+
+            const updateTexts = () => {
+                const t = TRANSLATIONS[state.lang];
+                Object.keys(t).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        // Evita sobreescribir el contenido de los íconos
+                        if (element.children.length > 0 && element.children[0].tagName === 'I') {
+                           const icon = element.children[0];
+                           element.innerHTML = '';
+                           element.appendChild(icon);
+                           element.append(` ${t[key]}`);
+                        } else {
+                           element.textContent = t[key];
+                        }
+                    }
+                });
+                renderCategoryFilters();
+            };
+            
+            const renderCategoryFilters = () => {
+                const t = CATEGORIES[state.lang];
+                dom.categoryFilters.innerHTML = Object.entries(t).map(([key, value]) => `
+                    <button data-category="${key}" class="category-btn whitespace-nowrap text-sm font-semibold px-4 py-2 rounded-full transition-colors ${state.activeCategory === key ? 'bg-sky-600 text-white' : 'bg-white dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600'}">
+                        ${value}
+                    </button>
+                `).join('');
+            };
+
+            const renderProducts = () => {
+                const t = TRANSLATIONS[state.lang];
+                const filteredProducts = ALL_PRODUCTS.filter(p => {
+                    const matchesCategory = state.activeCategory === 'all' || p.category === state.activeCategory;
+                    const matchesSearch = p.name.toLowerCase().includes(state.searchQuery.toLowerCase());
+                    return matchesCategory && matchesSearch;
+                });
+
+                dom.productList.innerHTML = filteredProducts.map(product => {
+                    const displayPrice = product.price * exchangeRates[state.currency];
+                    const isInCart = state.cart.some(item => item.id === product.id);
+                    return `
+                        <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3 flex flex-col justify-between transition-shadow hover:shadow-md">
+                            <div>
+                                <div class="text-3xl mb-2">${product.icon}</div>
+                                <h3 class="font-semibold text-slate-800 dark:text-slate-200 text-sm">${product.name}</h3>
+                                <p class="text-slate-600 dark:text-slate-300 font-bold text-base mt-1">${formatCurrency(displayPrice)}</p>
+                            </div>
+                            <button data-id="${product.id}" class="add-to-cart-btn mt-3 w-full py-2 px-1 rounded-lg font-semibold text-sm transition-colors flex items-center justify-center gap-1 ${isInCart ? 'bg-green-500 text-white' : 'bg-sky-600 text-white hover:bg-sky-700'}">
+                                <i class="ph ${isInCart ? 'ph-check-circle' : 'ph-plus-circle'}"></i>
+                                <span data-id="${product.id}">${isInCart ? t.addedToCart : t.addToCart}</span>
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+                if (filteredProducts.length === 0) {
+                    dom.productList.innerHTML = `<p class="col-span-full text-center text-slate-500 py-10">${t.noProductsFound}</p>`;
+                }
+            };
+
+            const renderCart = () => {
+                const t = TRANSLATIONS[state.lang];
+                let subtotal = 0;
+                let cartItemsHTML = '';
+
+                if (state.cart.length === 0) {
+                    cartItemsHTML = `<div class="text-center text-slate-500 dark:text-slate-400 py-10"><i class="ph ph-shopping-cart text-5xl"></i><p class="mt-2 font-medium">${t.cartEmpty}</p></div>`;
+                } else {
+                    cartItemsHTML = state.cart.map(item => {
+                        const product = ALL_PRODUCTS.find(p => p.id === item.id);
+                        const itemPrice = product.price * exchangeRates[state.currency];
+                        subtotal += itemPrice * item.quantity;
+                        return `
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex-grow"><p class="font-semibold text-sm">${product.name}</p><p class="text-xs text-slate-500 dark:text-slate-400">${formatCurrency(itemPrice)}</p></div>
+                                <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 rounded-full p-1">
+                                    <button data-id="${item.id}" class="decrease-quantity-btn w-6 h-6 rounded-full bg-white dark:bg-slate-600 shadow-sm hover:bg-slate-200 dark:hover:bg-slate-500 transition">-</button>
+                                    <span class="font-bold w-5 text-center text-sm">${item.quantity}</span>
+                                    <button data-id="${item.id}" class="increase-quantity-btn w-6 h-6 rounded-full bg-white dark:bg-slate-600 shadow-sm hover:bg-slate-200 dark:hover:bg-slate-500 transition">+</button>
+                                </div>
+                                <button data-id="${item.id}" class="remove-item-btn text-red-500 hover:text-red-700 transition"><i class="ph ph-x-circle text-xl"></i></button>
+                            </div>
+                        `;
+                    }).join('');
+                }
+                dom.cartItemsDesktop.innerHTML = cartItemsHTML;
+                dom.cartItemsMobile.innerHTML = cartItemsHTML;
+
+                const iva = subtotal * 0.19;
+                const total = subtotal + iva;
+
+                const totalsHTML = `
+                    <div class="space-y-2">
+                        <div class="flex justify-between font-medium text-slate-600 dark:text-slate-300 text-sm"><span>${t.subtotal}</span><span>${formatCurrency(subtotal)}</span></div>
+                        <div class="flex justify-between font-medium text-slate-600 dark:text-slate-300 text-sm"><span>${t.iva}</span><span>${formatCurrency(iva)}</span></div>
+                        <div class="flex justify-between font-bold text-lg text-slate-900 dark:text-white mt-2 border-t border-slate-200 dark:border-slate-700 pt-2"><span>${t.total}</span><span>${formatCurrency(total)}</span></div>
+                    </div>`;
+                dom.cartTotalsDesktop.innerHTML = totalsHTML;
+                dom.cartTotalsMobile.innerHTML = totalsHTML;
+
+                const hasItems = state.cart.length > 0;
+                const buttonsHTML = `
+                    <button id="whatsapp-btn" class="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors flex items-center justify-center gap-2 disabled:bg-green-300 dark:disabled:bg-green-800 disabled:cursor-not-allowed" ${!hasItems ? 'disabled' : ''}><i class="ph-fill ph-whatsapp-logo"></i><span>${t.sendWhatsApp}</span></button>
+                    <button id="clear-cart-btn" class="w-full bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition-colors flex items-center justify-center gap-2 disabled:bg-red-300 dark:disabled:bg-red-800 disabled:cursor-not-allowed" ${!hasItems ? 'disabled' : ''}><i class="ph ph-trash"></i><span>${t.clearQuote}</span></button>`;
+                dom.cartButtonsDesktop.innerHTML = buttonsHTML;
+                dom.cartButtonsMobile.innerHTML = buttonsHTML;
+                
+                dom.mobileTotalAmount.textContent = formatCurrency(total);
+                dom.viewCartBtn.disabled = !hasItems;
+            };
+
+            const updateDarkModeToggle = () => {
+                const sunIcon = dom.darkModeToggle.querySelector('.ph-sun');
+                const moonIcon = dom.darkModeToggle.querySelector('.ph-moon');
+                if (state.darkMode) {
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                } else {
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                }
+            };
+            
+            // --- LÓGICA DE INTERACCIÓN ---
+            const handleCartAction = (action, productId) => {
+                const itemIndex = state.cart.findIndex(item => item.id === productId);
+                const existingItem = state.cart[itemIndex];
+
+                switch (action) {
+                    case 'add':
+                        if (existingItem) existingItem.quantity++;
+                        else state.cart.push({ id: productId, quantity: 1 });
+                        break;
+                    case 'increase': if (existingItem) existingItem.quantity++; break;
+                    case 'decrease':
+                        if (existingItem && existingItem.quantity > 1) existingItem.quantity--;
+                        else if (existingItem) state.cart.splice(itemIndex, 1);
+                        break;
+                    case 'remove': if (itemIndex > -1) state.cart.splice(itemIndex, 1); break;
+                    case 'clear': state.cart = []; break;
+                }
+                saveState();
+                renderCart();
+                renderProducts(); // Re-render para actualizar estado de botones
+            };
+
+            const handleFlyToCartAnimation = (button) => {
+                const productIconElement = button.parentElement.querySelector('.text-3xl');
+                if (!productIconElement) return; // Safeguard if icon isn't found
+
+                const productIcon = productIconElement.cloneNode(true);
+                productIcon.classList.add('fly-to-cart');
+                document.body.appendChild(productIcon);
+
+                const startRect = button.getBoundingClientRect();
+                
+                let endTarget = null;
+                const isDesktop = window.innerWidth >= 1024;
+
+                if (isDesktop) {
+                    endTarget = document.querySelector('#quote-title-desktop i');
+                } else {
+                    endTarget = dom.mobileCartIcon;
+                }
+
+                if (!endTarget) {
+                    console.error("Cart icon not found for animation.");
+                    productIcon.remove();
+                    return;
+                }
+                
+                const endRect = endTarget.getBoundingClientRect();
+                
+                productIcon.style.left = `${startRect.left + startRect.width / 2}px`;
+                productIcon.style.top = `${startRect.top + startRect.height / 2}px`;
+
+                requestAnimationFrame(() => {
+                    productIcon.style.left = `${endRect.left + endRect.width / 2}px`;
+                    productIcon.style.top = `${endRect.top + endRect.height / 2}px`;
+                    productIcon.style.transform = 'scale(0.3)';
+                    productIcon.style.opacity = '0';
+                });
+
+                setTimeout(() => {
+                    productIcon.remove();
+                    
+                    const cartIconDesktop = document.querySelector('#quote-title-desktop i');
+                    const cartIconMobile = dom.mobileCartIcon;
+
+                    if (isDesktop && cartIconDesktop) {
+                        cartIconDesktop.parentElement.classList.add('cart-pulse');
+                    } else if (!isDesktop && cartIconMobile) {
+                        cartIconMobile.classList.add('cart-pulse');
+                    }
+                    
+                    setTimeout(() => {
+                        if (isDesktop && cartIconDesktop) cartIconDesktop.parentElement.classList.remove('cart-pulse');
+                        if (!isDesktop && cartIconMobile) cartIconMobile.classList.remove('cart-pulse');
+                    }, 500);
+                }, 600);
+            };
+
+            let toggleModal = (show) => { /* ... sin cambios ... */ };
+            let formatCurrency = (amount) => { /* ... sin cambios ... */ };
+            let generateWhatsAppMessage = () => { /* ... sin cambios ... */ };
+
+            // --- SETUP DE EVENT LISTENERS ---
+            function setupEventListeners() {
+                document.body.addEventListener('click', (e) => {
+                    const button = e.target.closest('button');
+                    if (!button) return;
+                    const id = parseInt(button.dataset.id);
+                    const category = button.dataset.category;
+
+                    if (button.classList.contains('add-to-cart-btn')) {
+                        handleCartAction('add', id);
+                        handleFlyToCartAnimation(button);
+                    } else if (button.classList.contains('increase-quantity-btn')) handleCartAction('increase', id);
+                    else if (button.classList.contains('decrease-quantity-btn')) handleCartAction('decrease', id);
+                    else if (button.classList.contains('remove-item-btn')) handleCartAction('remove', id);
+                    else if (button.id === 'clear-cart-btn') handleCartAction('clear');
+                    else if (button.id === 'whatsapp-btn') window.open(`https://api.whatsapp.com/send?text=${generateWhatsAppMessage()}`, '_blank');
+                    else if (button.classList.contains('category-btn')) {
+                        state.activeCategory = category;
+                        renderCategoryFilters();
+                        renderProducts();
+                    }
+                });
+
+                dom.langSwitcher.addEventListener('change', (e) => { state.lang = e.target.value; saveState(); updateUI(); });
+                dom.currencySwitcher.addEventListener('change', (e) => { state.currency = e.target.value; saveState(); updateUI(); });
+                dom.searchInput.addEventListener('input', (e) => { state.searchQuery = e.target.value; renderProducts(); });
+                dom.darkModeToggle.addEventListener('click', () => {
+                    state.darkMode = !state.darkMode;
+                    document.documentElement.classList.toggle('dark', state.darkMode);
+                    saveState();
+                    updateDarkModeToggle();
+                });
+                
+                dom.viewCartBtn.addEventListener('click', () => toggleModal(true));
+                dom.closeModalBtn.addEventListener('click', () => toggleModal(false));
+                dom.mobileCartModal.addEventListener('click', (e) => { if (e.target === dom.mobileCartModal) toggleModal(false); });
+            }
+
+            // --- DEFINICIONES Y HELPERS ---
+            function defineDomAndTranslations() {
+                Object.assign(dom, {
+                    productList: document.getElementById('product-list'),
+                    categoryFilters: document.getElementById('category-filters'),
+                    searchInput: document.getElementById('search-input'),
+                    cartItemsDesktop: document.getElementById('cart-items-desktop'),
+                    cartTotalsDesktop: document.getElementById('cart-totals-desktop'),
+                    cartButtonsDesktop: document.getElementById('cart-buttons-desktop'),
+                    cartItemsMobile: document.getElementById('cart-items-mobile'),
+                    cartTotalsMobile: document.getElementById('cart-totals-mobile'),
+                    cartButtonsMobile: document.getElementById('cart-buttons-mobile'),
+                    mobileTotalAmount: document.getElementById('mobile-total-amount'),
+                    viewCartBtn: document.getElementById('view-cart-btn'),
+                    mobileCartModal: document.getElementById('mobile-cart-modal'),
+                    modalContent: document.getElementById('modal-content'),
+                    closeModalBtn: document.getElementById('close-modal-btn'),
+                    mobileCartIcon: document.getElementById('mobile-cart-icon'),
+                    langSwitcher: document.getElementById('language-switcher'),
+                    currencySwitcher: document.getElementById('currency-switcher'),
+                    darkModeToggle: document.getElementById('dark-mode-toggle'),
+                });
+
+                Object.assign(TRANSLATIONS, {
+                    es: {
+                        mainTitle: "¡Tu Compa Ya!", mainSubtitle: "Selecciona productos para agregarlos a tu canasta de compra", productsTitle: "Lista de Productos", quoteTitle: "Tu Cotización", addToCart: "Agregar", addedToCart: "Agregado", cartEmpty: "Tu carrito está vacío", subtotal: "Subtotal:", iva: "IVA (19%):", total: "Total:", clearQuote: "Limpiar Cotización", sendWhatsApp: "Enviar por WhatsApp", whatsappMessageTitle: "*¡Hola! Te envío mi cotización desde Food Market:*", viewCart: "Ver Carrito", noProductsFound: "No se encontraron productos."
+                    },
+                    en: {
+                        mainTitle: "Your Shopping Buddy!", mainSubtitle: "Select products to add to your shopping basket", productsTitle: "Product List", quoteTitle: "Your Quote", addToCart: "Add", addedToCart: "Added", cartEmpty: "Your cart is empty", subtotal: "Subtotal:", iva: "VAT (19%):", total: "Total:", clearQuote: "Clear Quote", sendWhatsApp: "Send via WhatsApp", whatsappMessageTitle: "*Hi! Here is my quote from Food Market:*", viewCart: "View Cart", noProductsFound: "No products found."
+                    }
+                });
+                
+                dom.langSwitcher.innerHTML = `<option value="es">Español</option><option value="en">English</option>`;
+                dom.currencySwitcher.innerHTML = `<option value="COP">COP 🇨🇴</option><option value="USD">USD 🇺🇸</option><option value="EUR">EUR 🇪🇺</option>`;
+            }
+            
+            // Re-implementar funciones que no cambian para mantener el código autocontenido
+            const oldToggleModal = (show) => {
+                if (show) {
+                    dom.mobileCartModal.classList.remove('hidden');
+                    requestAnimationFrame(() => {
+                        dom.modalContent.classList.remove('modal-enter');
+                        dom.modalContent.classList.add('modal-enter-active');
+                    });
+                } else {
+                    dom.modalContent.classList.remove('modal-enter-active');
+                    dom.modalContent.classList.add('modal-leave-active');
+                    setTimeout(() => {
+                        dom.mobileCartModal.classList.add('hidden');
+                        dom.modalContent.classList.remove('modal-leave-active');
+                        dom.modalContent.classList.add('modal-enter');
+                    }, 300);
+                }
+            };
+            toggleModal = oldToggleModal;
+            
+            const oldFormatCurrency = (amount) => {
+                const options = { style: 'currency', currency: state.currency, minimumFractionDigits: state.currency === 'COP' ? 0 : 2, maximumFractionDigits: state.currency === 'COP' ? 0 : 2 };
+                return new Intl.NumberFormat(state.lang === 'es' ? 'es-CO' : 'en-US', options).format(amount);
+            };
+            formatCurrency = oldFormatCurrency;
+            
+            const oldGenerateWhatsAppMessage = () => {
+                const t = TRANSLATIONS[state.lang];
+                let message = `${t.whatsappMessageTitle}\n\n`;
+                let subtotal = 0;
+                state.cart.forEach(item => {
+                    const product = ALL_PRODUCTS.find(p => p.id === item.id);
+                    const itemPrice = product.price * exchangeRates[state.currency];
+                    subtotal += itemPrice * item.quantity;
+                    message += `*${product.name}*\n  ${item.quantity} x ${formatCurrency(itemPrice)}\n`;
+                });
+                const iva = subtotal * 0.19;
+                const total = subtotal + iva;
+                message += `\n-----------------------\n*${t.subtotal}* ${formatCurrency(subtotal)}\n*${t.iva}* ${formatCurrency(iva)}\n*${t.total}* ${formatCurrency(total)}\n`;
+                return encodeURIComponent(message);
+            };
+            generateWhatsAppMessage = oldGenerateWhatsAppMessage;
+
+            // --- INICIAR LA APP ---
+            init();
+        });
+    </script>
 </body>
 </html>
