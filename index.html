@@ -6,52 +6,57 @@
     <title>¡Tu Compra Ya! v2.0 - Cotizador PRO</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Inter -->
+    <!-- Google Fonts: Inter & Oswald for Logo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@600&display=swap" rel="stylesheet">
     <!-- Iconos de Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
+        /* CSS Variables for dynamic theme colors */
         :root {
-            --sky-600: #0284c7;
-            --slate-800: #1e293b;
+            --current-primary: #0284c7; /* Default to Food Market Sky-600 */
+            --current-primary-light: #38bdf8; /* Default to Food Market Sky-400 for dark mode moon icon */
         }
-        html.dark {
-            --sky-600: #38bdf8;
-            --slate-800: #f1f5f9;
-        }
+
         body {
             font-family: 'Inter', sans-serif;
             padding-bottom: 90px;
         }
         @media (min-width: 1024px) { body { padding-bottom: 0; } }
         
+        /* Custom scrollbar styles */
         .product-list::-webkit-scrollbar { width: 8px; }
         .product-list::-webkit-scrollbar-track { background: #f1f5f9; }
         .product-list::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
         html.dark .product-list::-webkit-scrollbar-track { background: #1e293b; }
         html.dark .product-list::-webkit-scrollbar-thumb { background: #475569; }
 
+        /* Banner styles - background image set dynamically in JS */
         .banner {
-            height: 200px;
-            background-image: url('https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?q=80&w=2574&auto=format&fit=crop');
+            height: 200px; /* Default height */
             background-size: cover;
             background-position: center;
         }
-        /* Animación para el modal */
+        /* Oswald font for specific titles (Butcher Shop) */
+        .logo-font {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* Modal Animations */
         .modal-enter { transform: translateY(100%); }
         .modal-enter-active { transform: translateY(0); transition: transform 0.3s ease-out; }
         .modal-leave-active { transform: translateY(100%); transition: transform 0.3s ease-in; }
         
-        /* Animación Fly-to-cart */
+        /* Fly-to-cart Animation */
         .fly-to-cart {
             position: absolute;
             font-size: 2rem;
             z-index: 100;
             transition: all 0.6s ease-in-out;
         }
-        /* Animación de pulso para el carrito */
+        /* Cart Pulse Animation */
         .cart-pulse {
             animation: pulse 0.5s;
         }
@@ -60,9 +65,34 @@
             50% { transform: scale(1.2); }
             100% { transform: scale(1); }
         }
+
+        /* Custom button classes for dynamic application */
+        /* These are base classes that can be extended by dynamic Tailwind classes */
+        .btn-base {
+            @apply text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-all duration-300;
+        }
+        .btn-base:hover {
+            @apply shadow-lg transform scale-105;
+        }
+        .btn-base:disabled {
+            @apply cursor-not-allowed scale-100 shadow-none;
+        }
+
+        /* Base product card style */
+        .product-card-base {
+            @apply bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3 flex flex-col justify-between transition-all duration-300;
+        }
+        .product-card-base:hover {
+            @apply shadow-xl transform -translate-y-1;
+        }
+
+        /* Dynamic focus ring color using CSS variable */
+        .focus\:ring-current-primary:focus {
+            --tw-ring-color: var(--current-primary);
+        }
     </style>
     <script>
-        // Configuración de Tailwind para modo oscuro
+        // Tailwind CSS configuration for dark mode
         tailwind.config = {
             darkMode: 'class',
         }
@@ -70,43 +100,47 @@
 </head>
 <body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors duration-300">
     
-    <div class="banner rounded-b-3xl shadow-lg flex items-center justify-center relative">
+    <div id="main-banner" class="banner rounded-b-3xl shadow-lg flex items-center justify-center relative">
         <div class="absolute inset-0 bg-black opacity-40 rounded-b-3xl"></div>
-        <h1 class="text-5xl md:text-6xl font-extrabold text-white z-10" style="text-shadow: 3px 3px 8px rgba(0,0,0,0.6);">
-            MINI / MERCADO
+        <h1 id="banner-title" class="text-5xl md:text-6xl font-extrabold text-white z-10" style="text-shadow: 3px 3px 8px rgba(0,0,0,0.6);">
+            Mercado Fácil
         </h1>
     </div>
 
     <div class="container mx-auto p-4 md:p-8 max-w-7xl">
         <header class="mb-4 text-center">
-            <h1 id="main-title" class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">¡Tu Compa Ya!</h1>
-            <p id="main-subtitle" class="text-slate-600 dark:text-slate-400 mt-2">Selecciona productos para agregarlos a tu canasta de compra</p>
+            <h1 id="main-title" class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white"></h1>
+            <p id="main-subtitle" class="text-slate-600 dark:text-slate-400 mt-2"></p>
         </header>
 
-        <!-- Controles Globales -->
+        <!-- Global Controls -->
         <div class="sticky top-0 z-30 bg-slate-100/80 dark:bg-slate-900/80 backdrop-blur-sm py-4 mb-4">
             <div class="flex flex-col md:flex-row justify-center items-center gap-4">
-                <!-- Buscador -->
+                <!-- Shop Switcher -->
+                <div id="shop-switcher" class="flex gap-2 bg-white dark:bg-slate-800 p-2 rounded-lg shadow-md">
+                    <!-- Shop buttons will be rendered here by JS -->
+                </div>
+                <!-- Search Bar -->
                 <div class="relative w-full md:max-w-xs">
-                    <input type="search" id="search-input" placeholder="Buscar productos..." class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 pl-10 focus:ring-2 focus:ring-sky-500">
+                    <input type="search" id="search-input" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 pl-10 focus:ring-2 focus:ring-current-primary">
                     <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                 </div>
-                <!-- Controles de Idioma, Moneda y Modo Oscuro -->
+                <!-- Language, Currency, Dark Mode Controls -->
                 <div class="flex items-center gap-4 bg-white dark:bg-slate-800 p-2 rounded-lg shadow-md">
-                    <select id="language-switcher" class="bg-slate-100 dark:bg-slate-700 border-none rounded-md p-1 font-semibold text-sm focus:ring-2 focus:ring-sky-500"></select>
-                    <select id="currency-switcher" class="bg-slate-100 dark:bg-slate-700 border-none rounded-md p-1 font-semibold text-sm focus:ring-2 focus:ring-sky-500"></select>
+                    <select id="language-switcher" class="bg-slate-100 dark:bg-slate-700 border-none rounded-md p-1 font-semibold text-sm focus:ring-2 focus:ring-current-primary"></select>
+                    <select id="currency-switcher" class="bg-slate-100 dark:bg-slate-700 border-none rounded-md p-1 font-semibold text-sm focus:ring-2 focus:ring-current-primary"></select>
                     <button id="dark-mode-toggle" class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700">
                         <i class="ph ph-sun text-xl text-yellow-500"></i>
-                        <i class="ph ph-moon hidden text-xl text-sky-400"></i>
+                        <i class="ph ph-moon hidden text-xl" style="color: var(--current-primary-light);"></i>
                     </button>
                 </div>
             </div>
-             <!-- Filtros de Categoría -->
+             <!-- Category Filters -->
             <div id="category-filters" class="flex gap-2 justify-center mt-4 overflow-x-auto pb-2"></div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-8">
-            <!-- Columna de Productos -->
+            <!-- Products Column -->
             <div class="lg:col-span-2">
                 <div class="bg-white dark:bg-slate-800 p-4 md:p-6 rounded-2xl shadow-lg">
                     <h2 id="products-title" class="text-xl md:text-2xl font-semibold mb-6 flex items-center"></h2>
@@ -114,7 +148,7 @@
                 </div>
             </div>
 
-            <!-- Columna de Cotización para Escritorio -->
+            <!-- Desktop Quote Column -->
             <div class="hidden lg:block lg:col-span-1">
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg sticky top-28">
                     <h2 id="quote-title-desktop" class="text-2xl font-semibold mb-6 flex items-center"></h2>
@@ -126,19 +160,19 @@
         </div>
     </div>
 
-    <!-- Barra de Carrito Fija para Móvil -->
+    <!-- Mobile Fixed Cart Bar -->
     <div id="mobile-cart-bar" class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] flex items-center justify-between">
         <div>
             <p id="mobile-total-label" class="text-sm text-slate-500 dark:text-slate-400">Total</p>
             <p id="mobile-total-amount" class="font-bold text-xl text-slate-800 dark:text-slate-200">$0</p>
         </div>
-        <button id="view-cart-btn" class="bg-sky-600 text-white font-semibold py-3 px-6 rounded-lg flex items-center gap-2 disabled:bg-sky-300 dark:disabled:bg-sky-800 disabled:cursor-not-allowed">
+        <button id="view-cart-btn" class="flex items-center gap-2 disabled:cursor-not-allowed">
             <i id="mobile-cart-icon" class="ph ph-shopping-cart-simple text-xl"></i>
             <span id="view-cart-label">Ver Carrito</span>
         </button>
     </div>
 
-    <!-- Modal de Carrito para Móvil -->
+    <!-- Mobile Cart Modal -->
     <div id="mobile-cart-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40">
         <div id="modal-content" class="absolute bottom-0 left-0 right-0 bg-slate-100 dark:bg-slate-900 rounded-t-2xl p-4 max-h-[85vh] overflow-y-auto transition-transform duration-300 ease-in-out modal-enter">
             <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-200 dark:border-slate-700">
@@ -155,200 +189,384 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            // --- 1. DATOS Y CONFIGURACIÓN ---
-            const ALL_PRODUCTS = [
-                // Existing
-                { id: 1, name: "Arroz Blanco (1kg)", price: 5500, icon: "🍚", category: "pantry" },
-                { id: 2, name: "Leche Entera (1L)", price: 4200, icon: "🥛", category: "dairy" },
-                { id: 3, name: "Huevos (x30)", price: 18000, icon: "🥚", category: "dairy" },
-                { id: 4, name: "Café Colombiano (500g)", price: 22000, icon: "☕", category: "pantry" },
-                { id: 5, name: "Aceite Vegetal (1L)", price: 15500, icon: "🍾", category: "pantry" },
-                { id: 6, name: "Pan Tajado (550g)", price: 6000, icon: "🍞", category: "bakery" },
-                { id: 7, name: "Queso Campesino (400g)", price: 11000, icon: "🧀", category: "dairy" },
-                { id: 8, name: "Manzanas (1kg)", price: 7500, icon: "🍎", category: "fruits_veg" },
-                { id: 9, name: "Pollo Entero (1kg)", price: 14000, icon: "🍗", category: "meats" },
-                { id: 10, name: "Papas (1kg)", price: 3500, icon: "🥔", category: "fruits_veg" },
-                { id: 11, name: "Tomates (1kg)", price: 4000, icon: "🍅", category: "fruits_veg" },
-                { id: 12, name: "Cebolla (1kg)", price: 3800, icon: "🧅", category: "fruits_veg" },
-                { id: 13, name: "Salmón (200g)", price: 25000, icon: "🐟", category: "meats" },
-                { id: 14, name: "Yogur Griego", price: 8000, icon: "🍦", category: "dairy" },
-                { id: 15, name: "Baguette", price: 4500, icon: "🥖", category: "bakery" },
-                // New Products
-                // Fruits & Veg
-                { id: 16, name: "Banano (1kg)", price: 3200, icon: "🍌", category: "fruits_veg" },
-                { id: 17, name: "Aguacate Hass", price: 4500, icon: "🥑", category: "fruits_veg" },
-                { id: 18, name: "Lechuga Crespa", price: 2500, icon: "🥬", category: "fruits_veg" },
-                { id: 19, name: "Zanahoria (500g)", price: 1800, icon: "🥕", category: "fruits_veg" },
-                { id: 20, name: "Limón (1kg)", price: 4000, icon: "🍋", category: "fruits_veg" },
-                { id: 21, name: "Brócoli", price: 3500, icon: "🥦", category: "fruits_veg" },
-                // Meats
-                { id: 22, name: "Carne Molida (500g)", price: 15000, icon: "🥩", category: "meats" },
-                { id: 23, name: "Chuleta de Cerdo (500g)", price: 12000, icon: "🥓", category: "meats" },
-                { id: 24, name: "Salchichas (x8)", price: 9000, icon: "🌭", category: "meats" },
-                // Dairy
-                { id: 25, name: "Mantequilla (250g)", price: 7500, icon: "🧈", category: "dairy" },
-                { id: 26, name: "Queso Mozzarella (250g)", price: 9500, icon: "🧀", category: "dairy" },
-                { id: 27, name: "Leche Deslactosada (1L)", price: 4800, icon: "🥛", category: "dairy" },
-                // Pantry
-                { id: 28, name: "Pasta Spaghetti (500g)", price: 4500, icon: "🍝", category: "pantry" },
-                { id: 29, name: "Lentejas (500g)", price: 4000, icon: "🫘", category: "pantry" },
-                { id: 30, name: "Frijol Cargamanto (500g)", price: 6500, icon: "🫘", category: "pantry" },
-                { id: 31, name: "Atún en Aceite", price: 5500, icon: "🥫", category: "pantry" },
-                { id: 32, name: "Mayonesa (200g)", price: 6000, icon: "🧴", category: "pantry" },
-                { id: 33, name: "Salsa de Tomate (200g)", price: 4500, icon: "🍅", category: "pantry" },
-                { id: 34, name: "Azúcar (1kg)", price: 5000, icon: "🍬", category: "pantry" },
-                { id: 35, name: "Sal (1kg)", price: 2000, icon: "🧂", category: "pantry" },
-                { id: 36, name: "Harina de Trigo (500g)", price: 3000, icon: "🌾", category: "pantry" },
-                // Bakery
-                { id: 37, name: "Croissant", price: 3500, icon: "🥐", category: "bakery" },
-                { id: 38, name: "Torta de Chocolate (Porción)", price: 8000, icon: "🍰", category: "bakery" },
-                { id: 39, name: "Arepas de Maíz (x5)", price: 4000, icon: "🫓", category: "bakery" },
-                // Drinks
-                { id: 40, name: "Agua Botella (600ml)", price: 2000, icon: "💧", category: "drinks" },
-                { id: 41, name: "Coca-Cola (1.5L)", price: 4500, icon: "🥤", category: "drinks" },
-                { id: 42, name: "Jugo de Naranja (1L)", price: 6000, icon: "🧃", category: "drinks" },
-                { id: 43, name: "Cerveza Nacional (x6)", price: 15000, icon: "🍺", category: "drinks" },
-                { id: 44, name: "Vino Tinto (750ml)", price: 35000, icon: "🍷", category: "drinks" },
-                // Snacks
-                { id: 45, name: "Papas Fritas (Paquete)", price: 3000, icon: "🍟", category: "snacks" },
-                { id: 46, name: "Galletas de Chocolate", price: 2500, icon: "🍪", category: "snacks" },
-                { id: 47, name: "Maní Salado (150g)", price: 4000, icon: "🥜", category: "snacks" },
-                { id: 48, name: "Barra de Chocolate", price: 3500, icon: "🍫", category: "snacks" },
-                // Cleaning
-                { id: 49, name: "Detergente Líquido (1L)", price: 18000, icon: "🧼", category: "cleaning" },
-                { id: 50, name: "Limpiador Multiusos", price: 9000, icon: "✨", category: "cleaning" },
-                { id: 51, name: "Lavaloza Líquido (500ml)", price: 7000, icon: "🍽️", category: "cleaning" },
-                { id: 52, name: "Papel Higiénico (x4)", price: 6000, icon: "🧻", category: "cleaning" },
-                // Personal Care
-                { id: 53, name: "Jabón de Baño", price: 3000, icon: "🚿", category: "personal_care" },
-                { id: 54, name: "Shampoo (400ml)", price: 15000, icon: "🧴", category: "personal_care" },
-                { id: 55, name: "Crema Dental", price: 8000, icon: "🦷", category: "personal_care" },
-                { id: 56, name: "Desodorante", price: 12000, icon: "🌬️", category: "personal_care" },
-                // Frozen
-                { id: 57, name: "Papas a la Francesa (Cong.)", price: 9000, icon: "🍟", category: "frozen" },
-                { id: 58, name: "Helado de Vainilla (1L)", price: 15000, icon: "🍨", category: "frozen" },
-                { id: 59, name: "Pizza Congelada", price: 20000, icon: "🍕", category: "frozen" },
-            ];
-
-            const CATEGORIES = {
-                es: { all: "Todos", fruits_veg: "Frutas y Verduras", dairy: "Lácteos y Huevos", meats: "Carnes", pantry: "Despensa", bakery: "Panadería", drinks: "Bebidas", snacks: "Snacks", cleaning: "Limpieza", personal_care: "Cuidado Personal", frozen: "Congelados" },
-                en: { all: "All", fruits_veg: "Fruits & Veg", dairy: "Dairy & Eggs", meats: "Meats", pantry: "Pantry", bakery: "Bakery", drinks: "Beverages", snacks: "Snacks", cleaning: "Cleaning", personal_care: "Personal Care", frozen: "Frozen" }
+            // --- 1. DATA AND CONFIGURATION ---
+            // Consolidated data for all shops
+            const SHOPS_CONFIG = {
+                'foodMarket': {
+                    id: 'foodMarket',
+                    name: 'Food Market',
+                    banner: 'https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?q=80&w=2574&auto=format&fit=crop',
+                    bannerTitle: 'Mercado Fácil',
+                    logoFontClass: '', // No special font for Food Market banner
+                    products: [
+                        { id: 1, name: "Arroz Blanco (1kg)", price: 5500, icon: "🍚", category: "pantry" },
+                        { id: 2, name: "Leche Entera (1L)", price: 4200, icon: "🥛", category: "dairy" },
+                        { id: 3, name: "Huevos (x30)", price: 18000, icon: "🥚", category: "dairy" },
+                        { id: 4, name: "Café Colombiano (500g)", price: 22000, icon: "☕", category: "pantry" },
+                        { id: 5, name: "Aceite Vegetal (1L)", price: 15500, icon: "🍾", category: "pantry" },
+                        { id: 6, name: "Pan Tajado (550g)", price: 6000, icon: "🍞", category: "bakery" },
+                        { id: 7, name: "Queso Campesino (400g)", price: 11000, icon: "🧀", category: "dairy" },
+                        { id: 8, name: "Manzanas (1kg)", price: 7500, icon: "🍎", category: "fruits_veg" },
+                        { id: 9, name: "Pollo Entero (1kg)", price: 14000, icon: "🍗", category: "meats" },
+                        { id: 10, name: "Papas (1kg)", price: 3500, icon: "🥔", category: "fruits_veg" },
+                        { id: 11, name: "Tomates (1kg)", price: 4000, icon: "🍅", category: "fruits_veg" },
+                        { id: 12, name: "Cebolla (1kg)", price: 3800, icon: "🧅", category: "fruits_veg" },
+                        { id: 13, name: "Salmón (200g)", price: 25000, icon: "🐟", category: "meats" },
+                        { id: 14, name: "Yogur Griego", price: 8000, icon: "🍦", category: "dairy" },
+                        { id: 15, name: "Baguette", price: 4500, icon: "🥖", category: "bakery" },
+                        { id: 16, name: "Banano (1kg)", price: 3200, icon: "🍌", category: "fruits_veg" },
+                        { id: 17, name: "Aguacate Hass", price: 4500, icon: "🥑", category: "fruits_veg" },
+                        { id: 18, name: "Lechuga Crespa", price: 2500, icon: "🥬", category: "fruits_veg" },
+                        { id: 19, name: "Zanahoria (500g)", price: 1800, icon: "🥕", category: "fruits_veg" },
+                        { id: 20, name: "Limón (1kg)", price: 4000, icon: "🍋", category: "fruits_veg" },
+                        { id: 21, name: "Brócoli", price: 3500, icon: "🥦", category: "fruits_veg" },
+                        { id: 22, name: "Carne Molida (500g)", price: 15000, icon: "🥩", category: "meats" },
+                        { id: 23, name: "Chuleta de Cerdo (500g)", price: 12000, icon: "🥓", category: "meats" },
+                        { id: 24, name: "Salchichas (x8)", price: 9000, icon: "🌭", category: "meats" },
+                        { id: 60, name: "Costilla de Res (1kg)", price: 28000, icon: "🍖", category: "meats" },
+                        { id: 61, name: "Pechuga de Pollo sin Hueso (500g)", price: 12000, icon: "🍗", category: "meats" },
+                        { id: 62, name: "Carne para Asar (500g)", price: 20000, icon: "🥩", category: "meats" },
+                        { id: 25, name: "Mantequilla (250g)", price: 7500, icon: "🧈", category: "dairy" },
+                        { id: 26, name: "Queso Mozzarella (250g)", price: 9500, icon: "🧀", category: "dairy" },
+                        { id: 27, name: "Leche Deslactosada (1L)", price: 4800, icon: "🥛", category: "dairy" },
+                        { id: 28, name: "Pasta Spaghetti (500g)", price: 4500, icon: "🍝", category: "pantry" },
+                        { id: 29, name: "Lentejas (500g)", price: 4000, icon: "🫘", category: "pantry" },
+                        { id: 30, name: "Frijol Cargamanto (500g)", price: 6500, icon: "🫘", category: "pantry" },
+                        { id: 31, name: "Atún en Aceite", price: 5500, icon: "🥫", category: "pantry" },
+                        { id: 32, name: "Mayonesa (200g)", price: 6000, icon: "🧴", category: "pantry" },
+                        { id: 33, name: "Salsa de Tomate (200g)", price: 4500, icon: "🍅", category: "pantry" },
+                        { id: 34, name: "Azúcar (1kg)", price: 5000, icon: "🍬", category: "pantry" },
+                        { id: 35, name: "Sal (1kg)", price: 2000, icon: "🧂", category: "pantry" },
+                        { id: 36, name: "Harina de Trigo (500g)", price: 3000, icon: "🌾", category: "pantry" },
+                        { id: 37, name: "Croissant", price: 3500, icon: "🥐", category: "bakery" },
+                        { id: 38, name: "Torta de Chocolate (Porción)", price: 8000, icon: "🍰", category: "bakery" },
+                        { id: 39, name: "Arepas de Maíz (x5)", price: 4000, icon: "🫓", category: "bakery" },
+                        { id: 40, name: "Agua Botella (600ml)", price: 2000, icon: "💧", category: "drinks" },
+                        { id: 41, name: "Coca-Cola (1.5L)", price: 4500, icon: "🥤", category: "drinks" },
+                        { id: 42, name: "Jugo de Naranja (1L)", price: 6000, icon: "🧃", category: "drinks" },
+                        { id: 43, name: "Cerveza Nacional (x6)", price: 15000, icon: "🍺", category: "drinks" },
+                        { id: 44, name: "Vino Tinto (750ml)", price: 35000, icon: "🍷", category: "drinks" },
+                        { id: 45, name: "Papas Fritas (Paquete)", price: 3000, icon: "🍟", category: "snacks" },
+                        { id: 46, name: "Galletas de Chocolate", price: 2500, icon: "🍪", category: "snacks" },
+                        { id: 47, name: "Maní Salado (150g)", price: 4000, icon: "🥜", category: "snacks" },
+                        { id: 48, name: "Barra de Chocolate", price: 3500, icon: "🍫", category: "snacks" },
+                        { id: 49, name: "Detergente Líquido (1L)", price: 18000, icon: "🧼", category: "cleaning" },
+                        { id: 50, name: "Limpiador Multiusos", price: 9000, icon: "✨", category: "cleaning" },
+                        { id: 51, name: "Lavaloza Líquido (500ml)", price: 7000, icon: "🍽️", category: "cleaning" },
+                        { id: 52, name: "Papel Higiénico (x4)", price: 6000, icon: "🧻", category: "cleaning" },
+                        { id: 53, name: "Jabón de Baño", price: 3000, icon: "🚿", category: "personal_care" },
+                        { id: 54, name: "Shampoo (400ml)", price: 15000, icon: "🧴", category: "personal_care" },
+                        { id: 55, name: "Crema Dental", price: 8000, icon: "🦷", category: "personal_care" },
+                        { id: 56, name: "Desodorante", price: 12000, icon: "🌬️", category: "personal_care" },
+                        { id: 57, name: "Papas a la Francesa (Cong.)", price: 9000, icon: "🍟", category: "frozen" },
+                        { id: 58, name: "Helado de Vainilla (1L)", price: 15000, icon: "🍨", category: "frozen" },
+                        { id: 59, name: "Pizza Congelada", price: 20000, icon: "🍕", category: "frozen" },
+                    ],
+                    categories: {
+                        es: { all: "Todos", fruits_veg: "Frutas y Verduras", dairy: "Lácteos y Huevos", meats: "Carnes", pantry: "Despensa", bakery: "Panadería", drinks: "Bebidas", snacks: "Snacks", cleaning: "Limpieza", personal_care: "Cuidado Personal", frozen: "Congelados" },
+                        en: { all: "All", fruits_veg: "Fruits & Veg", dairy: "Dairy & Eggs", meats: "Meats", pantry: "Pantry", bakery: "Bakery", drinks: "Beverages", snacks: "Snacks", cleaning: "Cleaning", personal_care: "Personal Care", frozen: "Frozen" }
+                    },
+                    translations: {
+                        es: {
+                            pageTitle: "¡Tu Compa Ya! - Cotizador PRO",
+                            mainTitle: "¡Tu Compa Ya!",
+                            mainSubtitle: "Selecciona productos para agregarlos a tu canasta de compra",
+                            productsTitle: '<i class="ph ph-basket text-current-primary mr-2"></i> Productos Disponibles',
+                            quoteTitleDesktop: '<i class="ph ph-shopping-cart-simple text-current-primary mr-2"></i> Tu Canasta',
+                            quoteTitleMobile: '<i class="ph ph-shopping-cart-simple text-current-primary mr-2"></i> Tu Canasta',
+                            addToCart: "Agregar",
+                            addedToCart: "Agregado",
+                            subtotal: "Subtotal:",
+                            iva: "IVA (19%):",
+                            total: "Total:",
+                            sendWhatsApp: "Enviar por WhatsApp",
+                            clearQuote: "Limpiar Canasta",
+                            mobileTotalLabel: "Total",
+                            viewCart: "Ver Carrito",
+                            cartEmpty: "Tu canasta está vacía. ¡Agrega algunos productos!",
+                            noProductsFound: "No se encontraron productos para tu búsqueda.",
+                            searchPlaceholder: "Buscar productos...",
+                            language: "Idioma",
+                            currency: "Moneda",
+                            shopName: "Food Market" // For shop switcher button
+                        },
+                        en: {
+                            pageTitle: "Your Buddy Now! - Quote PRO",
+                            mainTitle: "Your Buddy Now!",
+                            mainSubtitle: "Select products to add to your shopping basket",
+                            productsTitle: '<i class="ph ph-basket text-current-primary mr-2"></i> Available Products',
+                            quoteTitleDesktop: '<i class="ph ph-shopping-cart-simple text-current-primary mr-2"></i> Your Basket',
+                            quoteTitleMobile: '<i class="ph ph-shopping-cart-simple text-current-primary mr-2"></i> Your Basket',
+                            addToCart: "Add",
+                            addedToCart: "Added",
+                            subtotal: "Subtotal:",
+                            iva: "VAT (19%):",
+                            total: "Total:",
+                            sendWhatsApp: "Send via WhatsApp",
+                            clearQuote: "Clear Basket",
+                            mobileTotalLabel: "Total",
+                            viewCart: "View Cart",
+                            cartEmpty: "Your basket is empty. Add some products!",
+                            noProductsFound: "No products found for your search.",
+                            searchPlaceholder: "Search products...",
+                            language: "Language",
+                            currency: "Currency",
+                            shopName: "Food Market" // For shop switcher button
+                        }
+                    },
+                    theme: {
+                        primaryColor: 'sky', // Tailwind color name for main theme
+                        primaryColorHex: '#0284c7', // For dynamic CSS variables
+                        primaryColorLightHex: '#38bdf8', // For dark mode moon icon
+                        buttonClass: 'btn-primary-sky', // Default button class for this shop
+                        productPriceColor: 'slate-600', // Default product price color
+                        categoryColors: { // Specific colors for categories within Food Market
+                            fruits_veg: 'green',
+                            dairy: 'blue',
+                            meats: 'red',
+                            pantry: 'orange',
+                            bakery: 'yellow',
+                            drinks: 'indigo',
+                            snacks: 'purple',
+                            cleaning: 'teal',
+                            personal_care: 'pink',
+                            frozen: 'cyan'
+                        }
+                    }
+                },
+                'butcherShop': {
+                    id: 'butcherShop',
+                    name: 'The Premium Cut',
+                    banner: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?q=80&w=2670&auto=format&fit=crop',
+                    bannerTitle: 'The Premium Cut',
+                    logoFontClass: 'logo-font', // Special font for Butcher Shop banner
+                    products: [
+                        { id: 101, name: "Lomo de Res (500g)", price: 35000, icon: "🥩", category: "res" },
+                        { id: 102, name: "Punta de Anca (1kg)", price: 60000, icon: "🥩", category: "res" },
+                        { id: 103, name: "Chuletas de Cerdo (500g)", price: 18000, icon: "🥓", category: "cerdo" },
+                        { id: 104, name: "Pechuga de Pollo (1kg)", price: 22000, icon: "🍗", category: "pollo" },
+                        { id: 105, name: "Chorizo Santarrosano (x5)", price: 15000, icon: "🌭", category: "embutidos" },
+                        { id: 106, name: "Morcilla (500g)", price: 12000, icon: "⚫", category: "embutidos" },
+                        { id: 107, name: "Salami Genoa (100g)", price: 18000, icon: "🧀", category: "charcuteria" },
+                        { id: 108, name: "Queso Manchego (150g)", price: 25000, icon: "🧀", category: "charcuteria" },
+                        { id: 109, name: "Costillas de Cerdo BBQ (1kg)", price: 45000, icon: "🍖", category: "cerdo" },
+                        { id: 110, name: "Carne para Hamburguesa (x4)", price: 20000, icon: "🍔", category: "res" },
+                        { id: 111, name: "Alitas de Pollo (1kg)", price: 19000, icon: "🍗", category: "pollo" },
+                        { id: 112, name: "Jamón Serrano (100g)", price: 28000, icon: "🥓", category: "charcuteria" },
+                    ],
+                    categories: {
+                        es: { all: "Todo 🔪", res: "Res 🥩", cerdo: "Cerdo 🥓", pollo: "Pollo 🍗", embutidos: "Embutidos 🌭", charcuteria: "Charcutería 🧀" },
+                        en: { all: "All 🔪", res: "Beef 🥩", cerdo: "Pork 🥓", pollo: "Chicken 🍗", embutidos: "Sausages 🌭", charcuteria: "Deli 🧀" }
+                    },
+                    translations: {
+                        es: {
+                            pageTitle: "The Premium Cut - Carnicería & Charcutería",
+                            mainTitle: "Cortes de Calidad para su Mesa 🥩",
+                            mainSubtitle: "Seleccione los mejores cortes de carne, embutidos y productos deli.",
+                            productsTitle: '<i class="ph ph-knife text-current-primary mr-3"></i> Nuestros Productos',
+                            quoteTitleDesktop: '<i class="ph ph-shopping-cart text-current-primary mr-3"></i> Su Pedido',
+                            quoteTitleMobile: '<i class="ph ph-shopping-cart text-current-primary mr-3"></i> Su Pedido',
+                            addToCart: "Agregar",
+                            addedToCart: "Agregado",
+                            subtotal: "Subtotal:",
+                            iva: "IVA (19%):",
+                            total: "Total:",
+                            sendWhatsApp: "Hacer Pedido por WhatsApp",
+                            clearQuote: "Vaciar Carrito",
+                            mobileTotalLabel: "Total",
+                            viewCart: "Ver Pedido",
+                            cartEmpty: "Su carrito está vacío. ¡Elija sus cortes!",
+                            noProductsFound: "No se encontraron esos cortes.",
+                            searchPlaceholder: "Buscar carnes, quesos...",
+                            language: "Idioma",
+                            currency: "Moneda",
+                            shopName: "The Premium Cut" // For shop switcher button
+                        },
+                        en: {
+                            pageTitle: "The Premium Cut - Butcher & Deli",
+                            mainTitle: "Quality Cuts for Your Table 🥩",
+                            mainSubtitle: "Select the best meat cuts, sausages, and deli products.",
+                            productsTitle: '<i class="ph ph-knife text-current-primary mr-3"></i> Our Products',
+                            quoteTitleDesktop: '<i class="ph ph-shopping-cart text-current-primary mr-3"></i> Your Order',
+                            quoteTitleMobile: '<i class="ph ph-shopping-cart text-current-primary mr-3"></i> Your Order',
+                            addToCart: "Add",
+                            addedToCart: "Added",
+                            subtotal: "Subtotal:",
+                            iva: "VAT (19%):",
+                            total: "Total:",
+                            sendWhatsApp: "Order on WhatsApp",
+                            clearQuote: "Empty Cart",
+                            mobileTotalLabel: "Total",
+                            viewCart: "View Order",
+                            cartEmpty: "Your cart is empty. Choose your cuts!",
+                            noProductsFound: "Those cuts were not found.",
+                            searchPlaceholder: "Search for meats, cheeses...",
+                            language: "Language",
+                            currency: "Currency",
+                            shopName: "The Premium Cut" // For shop switcher button
+                        }
+                    },
+                    theme: {
+                        primaryColor: 'red', // Tailwind color name
+                        primaryColorHex: '#ef4444', // For dynamic CSS variables
+                        primaryColorLightHex: '#f87171', // For dark mode moon icon
+                        buttonClass: 'btn-primary-red', // Default button class for this shop
+                        productPriceColor: 'red-600', // Default product price color
+                        categoryColors: { // All butcher shop categories will use red
+                            all: 'red',
+                            res: 'red',
+                            cerdo: 'red',
+                            pollo: 'red',
+                            embutidos: 'red',
+                            charcuteria: 'red'
+                        }
+                    }
+                }
             };
 
             let exchangeRates = { COP: 1, USD: 0.00025, EUR: 0.00023 };
 
-            const TRANSLATIONS = { /* ... Se define más abajo ... */ };
-
-            // --- ESTADO DE LA APLICACIÓN ---
+            // --- APPLICATION STATE ---
             let state = {
                 cart: [],
                 lang: 'es',
                 currency: 'COP',
                 darkMode: false,
                 searchQuery: '',
-                activeCategory: 'all'
+                activeCategory: 'all',
+                activeShop: 'foodMarket' // New state for active shop
             };
 
-            // --- REFERENCIAS AL DOM ---
-            const dom = { /* ... Se define más abajo ... */ };
+            // --- DOM REFERENCES ---
+            const dom = {}; // Defined in defineDomAndTranslations
 
-            // --- SIMULACIÓN DE API ---
+            // --- API SIMULATION ---
             const fetchExchangeRates = async () => {
-                // En una app real, aquí se haría un fetch a una API.
-                // Por ahora, simulamos una pequeña demora y devolvemos valores.
                 console.log("Fetching exchange rates...");
                 await new Promise(resolve => setTimeout(resolve, 500));
-                // Simulamos una pequeña variación para mostrar que funciona
                 const newRates = { COP: 1, USD: 0.00025 + Math.random() * 0.00001, EUR: 0.00023 + Math.random() * 0.00001 };
                 console.log("Rates updated:", newRates);
                 return newRates;
             };
 
-            // --- LÓGICA DE INICIALIZACIÓN ---
+            // --- INITIALIZATION LOGIC ---
             const init = async () => {
-                // Definir traducciones y elementos del DOM
                 defineDomAndTranslations();
-                
-                // Cargar estado guardado
                 loadState();
-                
-                // Cargar tasas de cambio
                 try {
                     exchangeRates = await fetchExchangeRates();
                 } catch (error) {
                     console.error("Failed to fetch exchange rates, using default.", error);
                 }
-
-                // Configurar listeners de eventos
                 setupEventListeners();
-                
-                // Renderizar todo por primera vez
                 updateUI();
             };
 
-            // --- LÓGICA DE ESTADO (localStorage) ---
+            // --- STATE LOGIC (localStorage) ---
             const saveState = () => {
                 const stateToSave = {
                     cart: state.cart,
                     lang: state.lang,
                     currency: state.currency,
-                    darkMode: state.darkMode
+                    darkMode: state.darkMode,
+                    activeShop: state.activeShop
                 };
-                localStorage.setItem('foodMarketState', JSON.stringify(stateToSave));
+                localStorage.setItem('foodMarketAppState', JSON.stringify(stateToSave));
             };
             
             const loadState = () => {
-                const savedState = JSON.parse(localStorage.getItem('foodMarketState'));
+                const savedState = JSON.parse(localStorage.getItem('foodMarketAppState'));
                 if (savedState) {
                     state = { ...state, ...savedState };
                 }
-                // Aplicar modo oscuro al inicio
                 if (state.darkMode) {
                     document.documentElement.classList.add('dark');
                 }
-                dom.langSwitcher.value = state.lang;
+                populateLanguageSwitcher();
+                populateCurrencySwitcher();
+                dom.languageSwitcher.value = state.lang;
                 dom.currencySwitcher.value = state.currency;
             };
 
-            // --- LÓGICA DE RENDERIZADO ---
+            // --- RENDERING LOGIC ---
             const updateUI = () => {
+                const currentShop = SHOPS_CONFIG[state.activeShop];
+                
+                // Update banner
+                dom.mainBanner.style.backgroundImage = `url('${currentShop.banner}')`;
+                dom.bannerTitle.textContent = currentShop.bannerTitle;
+                // Remove existing logo font classes and add the correct one
+                dom.bannerTitle.classList.remove('logo-font');
+                if (currentShop.logoFontClass) {
+                    dom.bannerTitle.classList.add(currentShop.logoFontClass);
+                }
+
+                // Update dynamic CSS variables for theme colors
+                document.documentElement.style.setProperty('--current-primary', currentShop.theme.primaryColorHex);
+                document.documentElement.style.setProperty('--current-primary-light', currentShop.theme.primaryColorLightHex);
+
                 updateTexts();
+                renderShopSwitcher();
+                renderCategoryFilters();
                 renderProducts();
                 renderCart();
                 updateDarkModeToggle();
             };
 
             const updateTexts = () => {
-                const t = TRANSLATIONS[state.lang];
-                Object.keys(t).forEach(key => {
-                    const element = document.getElementById(key);
-                    if (element) {
-                        // Evita sobreescribir el contenido de los íconos
-                        if (element.children.length > 0 && element.children[0].tagName === 'I') {
-                           const icon = element.children[0];
-                           element.innerHTML = '';
-                           element.appendChild(icon);
-                           element.append(` ${t[key]}`);
-                        } else {
-                           element.textContent = t[key];
-                        }
-                    }
-                });
-                renderCategoryFilters();
+                const currentShopTranslations = SHOPS_CONFIG[state.activeShop].translations[state.lang];
+                
+                // Update document title
+                document.title = currentShopTranslations.pageTitle || SHOPS_CONFIG[state.activeShop].name; // Fallback to shop name if pageTitle is not defined
+
+                dom.mainTitle.textContent = currentShopTranslations.mainTitle;
+                dom.mainSubtitle.textContent = currentShopTranslations.mainSubtitle;
+                dom.searchInput.placeholder = currentShopTranslations.searchPlaceholder;
+                dom.viewCartLabel.textContent = currentShopTranslations.viewCart;
+
+                // Handle HTML content for titles (products, desktop quote, mobile quote)
+                dom.productsTitle.innerHTML = currentShopTranslations.productsTitle;
+                dom.quoteTitleDesktop.innerHTML = currentShopTranslations.quoteTitleDesktop;
+                dom.quoteTitleMobile.innerHTML = currentShopTranslations.quoteTitleMobile;
+
+                dom.mobileTotalLabel.textContent = currentShopTranslations.mobileTotalLabel;
+            };
+
+            const renderShopSwitcher = () => {
+                dom.shopSwitcher.innerHTML = Object.values(SHOPS_CONFIG).map(shop => {
+                    const isActive = state.activeShop === shop.id;
+                    const activeClasses = `bg-${shop.theme.primaryColor}-600 text-white shadow-lg`;
+                    const inactiveClasses = `bg-white dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600`;
+                    return `
+                        <button data-shop="${shop.id}" class="shop-btn px-4 py-2 rounded-md font-semibold text-sm transition-colors ${isActive ? activeClasses : inactiveClasses}">
+                            ${shop.translations[state.lang].shopName}
+                        </button>
+                    `;
+                }).join('');
             };
             
             const renderCategoryFilters = () => {
-                const t = CATEGORIES[state.lang];
-                dom.categoryFilters.innerHTML = Object.entries(t).map(([key, value]) => `
-                    <button data-category="${key}" class="category-btn whitespace-nowrap text-sm font-semibold px-4 py-2 rounded-full transition-colors ${state.activeCategory === key ? 'bg-sky-600 text-white' : 'bg-white dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600'}">
-                        ${value}
-                    </button>
-                `).join('');
+                const currentShopCategories = SHOPS_CONFIG[state.activeShop].categories[state.lang];
+                const currentShopTheme = SHOPS_CONFIG[state.activeShop].theme;
+
+                dom.categoryFilters.innerHTML = Object.entries(currentShopCategories).map(([key, value]) => {
+                    // Determine the color for the active category button
+                    const categoryColor = currentShopTheme.categoryColors[key] || currentShopTheme.primaryColor;
+                    const activeClasses = `bg-${categoryColor}-600 text-white shadow-lg`;
+                    const inactiveClasses = `bg-white dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600`;
+                    
+                    return `
+                        <button data-category="${key}" class="category-btn whitespace-nowrap text-sm font-semibold px-4 py-2 rounded-full transition-colors ${state.activeCategory === key ? activeClasses : inactiveClasses}">
+                            ${value}
+                        </button>
+                    `;
+                }).join('');
             };
 
             const renderProducts = () => {
-                const t = TRANSLATIONS[state.lang];
-                const filteredProducts = ALL_PRODUCTS.filter(p => {
+                const currentShop = SHOPS_CONFIG[state.activeShop];
+                const t = currentShop.translations[state.lang];
+                const filteredProducts = currentShop.products.filter(p => {
                     const matchesCategory = state.activeCategory === 'all' || p.category === state.activeCategory;
                     const matchesSearch = p.name.toLowerCase().includes(state.searchQuery.toLowerCase());
                     return matchesCategory && matchesSearch;
@@ -357,14 +575,24 @@
                 dom.productList.innerHTML = filteredProducts.map(product => {
                     const displayPrice = product.price * exchangeRates[state.currency];
                     const isInCart = state.cart.some(item => item.id === product.id);
+                    
+                    // Determine button color based on category
+                    const categoryButtonColor = currentShop.theme.categoryColors[product.category] || currentShop.theme.primaryColor;
+                    const buttonClasses = isInCart 
+                        ? 'bg-green-500 text-white' 
+                        : `bg-${categoryButtonColor}-600 text-white hover:bg-${categoryButtonColor}-700`;
+
+                    // Determine product price color based on category, fallback to shop's general product price color
+                    const productPriceColorClass = `text-${categoryButtonColor}-600`;
+
                     return `
-                        <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3 flex flex-col justify-between transition-shadow hover:shadow-md">
+                        <div class="product-card-base">
                             <div>
                                 <div class="text-3xl mb-2">${product.icon}</div>
                                 <h3 class="font-semibold text-slate-800 dark:text-slate-200 text-sm">${product.name}</h3>
-                                <p class="text-slate-600 dark:text-slate-300 font-bold text-base mt-1">${formatCurrency(displayPrice)}</p>
+                                <p class="font-bold text-base mt-1 ${productPriceColorClass}">${formatCurrency(displayPrice)}</p>
                             </div>
-                            <button data-id="${product.id}" class="add-to-cart-btn mt-3 w-full py-2 px-1 rounded-lg font-semibold text-sm transition-colors flex items-center justify-center gap-1 ${isInCart ? 'bg-green-500 text-white' : 'bg-sky-600 text-white hover:bg-sky-700'}">
+                            <button data-id="${product.id}" class="add-to-cart-btn mt-3 w-full py-2 px-1 rounded-lg font-semibold text-sm transition-colors flex items-center justify-center gap-1 ${buttonClasses}">
                                 <i class="ph ${isInCart ? 'ph-check-circle' : 'ph-plus-circle'}"></i>
                                 <span data-id="${product.id}">${isInCart ? t.addedToCart : t.addToCart}</span>
                             </button>
@@ -377,15 +605,22 @@
             };
 
             const renderCart = () => {
-                const t = TRANSLATIONS[state.lang];
+                const currentShop = SHOPS_CONFIG[state.activeShop];
+                const t = currentShop.translations[state.lang];
                 let subtotal = 0;
                 let cartItemsHTML = '';
 
-                if (state.cart.length === 0) {
+                // Filter cart items to only show products from the active shop
+                const activeShopProducts = currentShop.products;
+                const cartItemsForActiveShop = state.cart.filter(cartItem => 
+                    activeShopProducts.some(product => product.id === cartItem.id)
+                );
+
+                if (cartItemsForActiveShop.length === 0) {
                     cartItemsHTML = `<div class="text-center text-slate-500 dark:text-slate-400 py-10"><i class="ph ph-shopping-cart text-5xl"></i><p class="mt-2 font-medium">${t.cartEmpty}</p></div>`;
                 } else {
-                    cartItemsHTML = state.cart.map(item => {
-                        const product = ALL_PRODUCTS.find(p => p.id === item.id);
+                    cartItemsHTML = cartItemsForActiveShop.map(item => {
+                        const product = activeShopProducts.find(p => p.id === item.id);
                         const itemPrice = product.price * exchangeRates[state.currency];
                         subtotal += itemPrice * item.quantity;
                         return `
@@ -416,10 +651,15 @@
                 dom.cartTotalsDesktop.innerHTML = totalsHTML;
                 dom.cartTotalsMobile.innerHTML = totalsHTML;
 
-                const hasItems = state.cart.length > 0;
+                const hasItems = cartItemsForActiveShop.length > 0;
+                // Apply the correct button class for the "View Cart" button
+                const viewCartButtonColor = currentShop.theme.primaryColor;
+                dom.viewCartBtn.className = `btn-base bg-${viewCartButtonColor}-600 hover:bg-${viewCartButtonColor}-700 disabled:bg-${viewCartButtonColor}-300 dark:disabled:bg-${viewCartButtonColor}-800 flex items-center gap-2 disabled:cursor-not-allowed`;
+
                 const buttonsHTML = `
                     <button id="whatsapp-btn" class="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors flex items-center justify-center gap-2 disabled:bg-green-300 dark:disabled:bg-green-800 disabled:cursor-not-allowed" ${!hasItems ? 'disabled' : ''}><i class="ph-fill ph-whatsapp-logo"></i><span>${t.sendWhatsApp}</span></button>
                     <button id="clear-cart-btn" class="w-full bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition-colors flex items-center justify-center gap-2 disabled:bg-red-300 dark:disabled:bg-red-800 disabled:cursor-not-allowed" ${!hasItems ? 'disabled' : ''}><i class="ph ph-trash"></i><span>${t.clearQuote}</span></button>`;
+                
                 dom.cartButtonsDesktop.innerHTML = buttonsHTML;
                 dom.cartButtonsMobile.innerHTML = buttonsHTML;
                 
@@ -439,7 +679,7 @@
                 }
             };
             
-            // --- LÓGICA DE INTERACCIÓN ---
+            // --- INTERACTION LOGIC ---
             const handleCartAction = (action, productId) => {
                 const itemIndex = state.cart.findIndex(item => item.id === productId);
                 const existingItem = state.cart[itemIndex];
@@ -455,16 +695,20 @@
                         else if (existingItem) state.cart.splice(itemIndex, 1);
                         break;
                     case 'remove': if (itemIndex > -1) state.cart.splice(itemIndex, 1); break;
-                    case 'clear': state.cart = []; break;
+                    case 'clear': 
+                        // Only clear items belonging to the current active shop
+                        const currentShopProducts = SHOPS_CONFIG[state.activeShop].products.map(p => p.id);
+                        state.cart = state.cart.filter(item => !currentShopProducts.includes(item.id));
+                        break;
                 }
                 saveState();
                 renderCart();
-                renderProducts(); // Re-render para actualizar estado de botones
+                renderProducts(); // Re-render to update button states
             };
 
             const handleFlyToCartAnimation = (button) => {
                 const productIconElement = button.parentElement.querySelector('.text-3xl');
-                if (!productIconElement) return; // Safeguard if icon isn't found
+                if (!productIconElement) return;
 
                 const productIcon = productIconElement.cloneNode(true);
                 productIcon.classList.add('fly-to-cart');
@@ -518,92 +762,13 @@
                 }, 600);
             };
 
-            let toggleModal = (show) => { /* ... sin cambios ... */ };
-            let formatCurrency = (amount) => { /* ... sin cambios ... */ };
-            let generateWhatsAppMessage = () => { /* ... sin cambios ... */ };
-
-            // --- SETUP DE EVENT LISTENERS ---
-            function setupEventListeners() {
-                document.body.addEventListener('click', (e) => {
-                    const button = e.target.closest('button');
-                    if (!button) return;
-                    const id = parseInt(button.dataset.id);
-                    const category = button.dataset.category;
-
-                    if (button.classList.contains('add-to-cart-btn')) {
-                        handleCartAction('add', id);
-                        handleFlyToCartAnimation(button);
-                    } else if (button.classList.contains('increase-quantity-btn')) handleCartAction('increase', id);
-                    else if (button.classList.contains('decrease-quantity-btn')) handleCartAction('decrease', id);
-                    else if (button.classList.contains('remove-item-btn')) handleCartAction('remove', id);
-                    else if (button.id === 'clear-cart-btn') handleCartAction('clear');
-                    else if (button.id === 'whatsapp-btn') window.open(`https://api.whatsapp.com/send?text=${generateWhatsAppMessage()}`, '_blank');
-                    else if (button.classList.contains('category-btn')) {
-                        state.activeCategory = category;
-                        renderCategoryFilters();
-                        renderProducts();
-                    }
-                });
-
-                dom.langSwitcher.addEventListener('change', (e) => { state.lang = e.target.value; saveState(); updateUI(); });
-                dom.currencySwitcher.addEventListener('change', (e) => { state.currency = e.target.value; saveState(); updateUI(); });
-                dom.searchInput.addEventListener('input', (e) => { state.searchQuery = e.target.value; renderProducts(); });
-                dom.darkModeToggle.addEventListener('click', () => {
-                    state.darkMode = !state.darkMode;
-                    document.documentElement.classList.toggle('dark', state.darkMode);
-                    saveState();
-                    updateDarkModeToggle();
-                });
-                
-                dom.viewCartBtn.addEventListener('click', () => toggleModal(true));
-                dom.closeModalBtn.addEventListener('click', () => toggleModal(false));
-                dom.mobileCartModal.addEventListener('click', (e) => { if (e.target === dom.mobileCartModal) toggleModal(false); });
-            }
-
-            // --- DEFINICIONES Y HELPERS ---
-            function defineDomAndTranslations() {
-                Object.assign(dom, {
-                    productList: document.getElementById('product-list'),
-                    categoryFilters: document.getElementById('category-filters'),
-                    searchInput: document.getElementById('search-input'),
-                    cartItemsDesktop: document.getElementById('cart-items-desktop'),
-                    cartTotalsDesktop: document.getElementById('cart-totals-desktop'),
-                    cartButtonsDesktop: document.getElementById('cart-buttons-desktop'),
-                    cartItemsMobile: document.getElementById('cart-items-mobile'),
-                    cartTotalsMobile: document.getElementById('cart-totals-mobile'),
-                    cartButtonsMobile: document.getElementById('cart-buttons-mobile'),
-                    mobileTotalAmount: document.getElementById('mobile-total-amount'),
-                    viewCartBtn: document.getElementById('view-cart-btn'),
-                    mobileCartModal: document.getElementById('mobile-cart-modal'),
-                    modalContent: document.getElementById('modal-content'),
-                    closeModalBtn: document.getElementById('close-modal-btn'),
-                    mobileCartIcon: document.getElementById('mobile-cart-icon'),
-                    langSwitcher: document.getElementById('language-switcher'),
-                    currencySwitcher: document.getElementById('currency-switcher'),
-                    darkModeToggle: document.getElementById('dark-mode-toggle'),
-                });
-
-                Object.assign(TRANSLATIONS, {
-                    es: {
-                        mainTitle: "¡Tu Compa Ya!", mainSubtitle: "Selecciona productos para agregarlos a tu canasta de compra", productsTitle: "Lista de Productos", quoteTitle: "Tu Cotización", addToCart: "Agregar", addedToCart: "Agregado", cartEmpty: "Tu carrito está vacío", subtotal: "Subtotal:", iva: "IVA (19%):", total: "Total:", clearQuote: "Limpiar Cotización", sendWhatsApp: "Enviar por WhatsApp", whatsappMessageTitle: "*¡Hola! Te envío mi cotización desde Food Market:*", viewCart: "Ver Carrito", noProductsFound: "No se encontraron productos."
-                    },
-                    en: {
-                        mainTitle: "Your Shopping Buddy!", mainSubtitle: "Select products to add to your shopping basket", productsTitle: "Product List", quoteTitle: "Your Quote", addToCart: "Add", addedToCart: "Added", cartEmpty: "Your cart is empty", subtotal: "Subtotal:", iva: "VAT (19%):", total: "Total:", clearQuote: "Clear Quote", sendWhatsApp: "Send via WhatsApp", whatsappMessageTitle: "*Hi! Here is my quote from Food Market:*", viewCart: "View Cart", noProductsFound: "No products found."
-                    }
-                });
-                
-                dom.langSwitcher.innerHTML = `<option value="es">Español</option><option value="en">English</option>`;
-                dom.currencySwitcher.innerHTML = `<option value="COP">COP 🇨🇴</option><option value="USD">USD 🇺🇸</option><option value="EUR">EUR 🇪🇺</option>`;
-            }
-            
-            // Re-implementar funciones que no cambian para mantener el código autocontenido
-            const oldToggleModal = (show) => {
+            const toggleModal = (show) => {
                 if (show) {
                     dom.mobileCartModal.classList.remove('hidden');
-                    requestAnimationFrame(() => {
+                    setTimeout(() => {
                         dom.modalContent.classList.remove('modal-enter');
                         dom.modalContent.classList.add('modal-enter-active');
-                    });
+                    }, 10);
                 } else {
                     dom.modalContent.classList.remove('modal-enter-active');
                     dom.modalContent.classList.add('modal-leave-active');
@@ -614,32 +779,165 @@
                     }, 300);
                 }
             };
-            toggleModal = oldToggleModal;
-            
-            const oldFormatCurrency = (amount) => {
-                const options = { style: 'currency', currency: state.currency, minimumFractionDigits: state.currency === 'COP' ? 0 : 2, maximumFractionDigits: state.currency === 'COP' ? 0 : 2 };
-                return new Intl.NumberFormat(state.lang === 'es' ? 'es-CO' : 'en-US', options).format(amount);
+
+            const formatCurrency = (amount) => {
+                const formatter = new Intl.NumberFormat(state.lang === 'es' ? 'es-CO' : 'en-US', {
+                    style: 'currency',
+                    currency: state.currency,
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: state.currency === 'COP' ? 0 : 2
+                });
+                return formatter.format(amount);
             };
-            formatCurrency = oldFormatCurrency;
-            
-            const oldGenerateWhatsAppMessage = () => {
-                const t = TRANSLATIONS[state.lang];
-                let message = `${t.whatsappMessageTitle}\n\n`;
+
+            const generateWhatsAppMessage = () => {
+                const currentShop = SHOPS_CONFIG[state.activeShop];
+                const t = currentShop.translations[state.lang];
+                // Use whatsappMessageTitle if available, otherwise fallback
+                let messageTitle = t.whatsappMessageTitle || `${t.mainTitle} - ${t.quoteTitleDesktop.replace(/<[^>]*>/g, '')}`;
+                let message = `${messageTitle}\n\n`;
                 let subtotal = 0;
-                state.cart.forEach(item => {
-                    const product = ALL_PRODUCTS.find(p => p.id === item.id);
+
+                const activeShopProducts = currentShop.products;
+                const cartItemsForActiveShop = state.cart.filter(cartItem => 
+                    activeShopProducts.some(product => product.id === cartItem.id)
+                );
+
+                cartItemsForActiveShop.forEach(item => {
+                    const product = activeShopProducts.find(p => p.id === item.id);
                     const itemPrice = product.price * exchangeRates[state.currency];
                     subtotal += itemPrice * item.quantity;
-                    message += `*${product.name}*\n  ${item.quantity} x ${formatCurrency(itemPrice)}\n`;
+                    message += `${item.quantity} x ${product.name} - ${formatCurrency(itemPrice)} c/u\n`;
                 });
+
                 const iva = subtotal * 0.19;
                 const total = subtotal + iva;
-                message += `\n-----------------------\n*${t.subtotal}* ${formatCurrency(subtotal)}\n*${t.iva}* ${formatCurrency(iva)}\n*${t.total}* ${formatCurrency(total)}\n`;
+
+                message += `\n${t.subtotal} ${formatCurrency(subtotal)}\n`;
+                message += `${t.iva} ${formatCurrency(iva)}\n`;
+                message += `${t.total} ${formatCurrency(total)}\n\n`;
+                message += `¡Gracias por tu compra!`;
+
                 return encodeURIComponent(message);
             };
-            generateWhatsAppMessage = oldGenerateWhatsAppMessage;
 
-            // --- INICIAR LA APP ---
+            // Define DOM elements and populate initial select options
+            function defineDomAndTranslations() {
+                dom.mainBanner = document.getElementById('main-banner');
+                dom.bannerTitle = document.getElementById('banner-title');
+                dom.mainTitle = document.getElementById('main-title');
+                dom.mainSubtitle = document.getElementById('main-subtitle');
+                dom.searchInput = document.getElementById('search-input');
+                dom.shopSwitcher = document.getElementById('shop-switcher');
+                dom.languageSwitcher = document.getElementById('language-switcher');
+                dom.currencySwitcher = document.getElementById('currency-switcher');
+                dom.darkModeToggle = document.getElementById('dark-mode-toggle');
+                dom.categoryFilters = document.getElementById('category-filters');
+                dom.productsTitle = document.getElementById('products-title');
+                dom.productList = document.getElementById('product-list');
+                dom.quoteTitleDesktop = document.getElementById('quote-title-desktop');
+                dom.cartItemsDesktop = document.getElementById('cart-items-desktop');
+                dom.cartTotalsDesktop = document.getElementById('cart-totals-desktop');
+                dom.cartButtonsDesktop = document.getElementById('cart-buttons-desktop');
+                dom.mobileCartBar = document.getElementById('mobile-cart-bar');
+                dom.mobileTotalLabel = document.getElementById('mobile-total-label');
+                dom.mobileTotalAmount = document.getElementById('mobile-total-amount');
+                dom.viewCartBtn = document.getElementById('view-cart-btn');
+                dom.mobileCartIcon = document.getElementById('mobile-cart-icon');
+                dom.viewCartLabel = document.getElementById('view-cart-label');
+                dom.mobileCartModal = document.getElementById('mobile-cart-modal');
+                dom.modalContent = document.getElementById('modal-content');
+                dom.quoteTitleMobile = document.getElementById('quote-title-mobile');
+                dom.closeModalBtn = document.getElementById('close-modal-btn');
+                dom.cartItemsMobile = document.getElementById('cart-items-mobile');
+                dom.cartTotalsMobile = document.getElementById('cart-totals-mobile');
+                dom.cartButtonsMobile = document.getElementById('cart-buttons-mobile');
+
+                populateLanguageSwitcher();
+                populateCurrencySwitcher();
+            }
+
+            function populateLanguageSwitcher() {
+                dom.languageSwitcher.innerHTML = `
+                    <option value="es">Español</option>
+                    <option value="en">English</option>
+                `;
+            }
+
+            function populateCurrencySwitcher() {
+                dom.currencySwitcher.innerHTML = `
+                    <option value="COP">COP</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                `;
+            }
+
+            // --- EVENT LISTENERS SETUP ---
+            function setupEventListeners() {
+                document.body.addEventListener('click', (e) => {
+                    const button = e.target.closest('button');
+                    if (!button) return;
+                    const id = parseInt(button.dataset.id);
+                    const category = button.dataset.category;
+                    const shopId = button.dataset.shop;
+
+                    if (button.classList.contains('add-to-cart-btn')) {
+                        handleCartAction('add', id);
+                        handleFlyToCartAnimation(button);
+                    } else if (button.classList.contains('increase-quantity-btn')) {
+                        handleCartAction('increase', id);
+                    } else if (button.classList.contains('decrease-quantity-btn')) {
+                        handleCartAction('decrease', id);
+                    } else if (button.classList.contains('remove-item-btn')) {
+                        handleCartAction('remove', id);
+                    } else if (button.id === 'clear-cart-btn') {
+                        handleCartAction('clear');
+                    } else if (button.id === 'whatsapp-btn') {
+                        const message = generateWhatsAppMessage();
+                        window.open(`https://api.whatsapp.com/send?text=${message}`, '_blank');
+                    } else if (button.id === 'dark-mode-toggle') {
+                        state.darkMode = !state.darkMode;
+                        document.documentElement.classList.toggle('dark', state.darkMode);
+                        saveState();
+                        updateDarkModeToggle();
+                    } else if (button.classList.contains('category-btn')) {
+                        state.activeCategory = category;
+                        saveState();
+                        renderProducts();
+                        renderCategoryFilters();
+                    } else if (button.classList.contains('shop-btn')) {
+                        state.activeShop = shopId;
+                        state.activeCategory = 'all'; // Reset category when switching shops
+                        state.searchQuery = ''; // Clear search when switching shops
+                        dom.searchInput.value = ''; // Clear search input field
+                        saveState();
+                        updateUI();
+                    } else if (button.id === 'view-cart-btn') {
+                        toggleModal(true);
+                    } else if (button.id === 'close-modal-btn') {
+                        toggleModal(false);
+                    }
+                });
+
+                dom.languageSwitcher.addEventListener('change', (e) => {
+                    state.lang = e.target.value;
+                    saveState();
+                    updateUI();
+                });
+
+                dom.currencySwitcher.addEventListener('change', (e) => {
+                    state.currency = e.target.value;
+                    saveState();
+                    updateUI();
+                });
+
+                dom.searchInput.addEventListener('input', (e) => {
+                    state.searchQuery = e.target.value;
+                    renderProducts();
+                });
+            }
+
+            // --- INITIALIZE THE APPLICATION ---
             init();
         });
     </script>
