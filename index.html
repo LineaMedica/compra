@@ -13,10 +13,10 @@
     <!-- Iconos de Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
-        /* CSS Variables for dynamic theme colors */
+        /* Variables CSS para colores de tema dinámicos */
         :root {
-            --current-primary: #0284c7; /* Default to Food Market Sky-600 */
-            --current-primary-light: #38bdf8; /* Default to Food Market Sky-400 for dark mode moon icon */
+            --current-primary: #0284c7; /* Por defecto a Food Market Sky-600 */
+            --current-primary-light: #38bdf8; /* Por defecto a Food Market Sky-400 para el icono de luna del modo oscuro */
         }
 
         body {
@@ -25,38 +25,49 @@
         }
         @media (min-width: 1024px) { body { padding-bottom: 0; } }
         
-        /* Custom scrollbar styles */
-        .product-list::-webkit-scrollbar { width: 8px; }
+        /* Estilos de barra de desplazamiento personalizados para la lista de productos */
+        .product-list::-webkit-scrollbar { width: 11px; }
         .product-list::-webkit-scrollbar-track { background: #f1f5f9; }
         .product-list::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
         html.dark .product-list::-webkit-scrollbar-track { background: #1e293b; }
         html.dark .product-list::-webkit-scrollbar-thumb { background: #475569; }
 
-        /* Banner styles - background image set dynamically in JS */
+        /* Ocultar la barra de desplazamiento para los filtros de categoría pero mantener la funcionalidad de desplazamiento */
+        #category-filters::-webkit-scrollbar {
+            display: none; /* Para navegadores Webkit (Chrome, Safari) */
+        }
+        #category-filters {
+            -ms-overflow-style: none;  /* Para IE y Edge */
+            scrollbar-width: none;  /* Para Firefox */
+            scroll-behavior: smooth; /* Desplazamiento suave para desplazamientos programáticos */
+        }
+
+
+        /* Estilos de banner - imagen de fondo establecida dinámicamente en JS */
         .banner {
-            height: 200px; /* Default height */
+            height: 200px; /* Altura predeterminada */
             background-size: cover;
             background-position: center;
         }
-        /* Oswald font for specific titles (Butcher Shop) */
+        /* Fuente Oswald para títulos específicos (Carnicería) */
         .logo-font {
             font-family: 'Oswald', sans-serif;
             text-transform: uppercase;
         }
 
-        /* Modal Animations */
+        /* Animaciones modales */
         .modal-enter { transform: translateY(100%); }
         .modal-enter-active { transform: translateY(0); transition: transform 0.3s ease-out; }
         .modal-leave-active { transform: translateY(100%); transition: transform 0.3s ease-in; }
         
-        /* Fly-to-cart Animation */
+        /* Animación de volar al carrito */
         .fly-to-cart {
             position: absolute;
             font-size: 2rem;
             z-index: 100;
             transition: all 0.6s ease-in-out;
         }
-        /* Cart Pulse Animation */
+        /* Animación de pulso del carrito */
         .cart-pulse {
             animation: pulse 0.5s;
         }
@@ -66,8 +77,8 @@
             100% { transform: scale(1); }
         }
 
-        /* Custom button classes for dynamic application */
-        /* These are base classes that can be extended by dynamic Tailwind classes */
+        /* Clases de botones personalizados para aplicación dinámica */
+        /* Estas son clases base que pueden ser extendidas por clases dinámicas de Tailwind */
         .btn-base {
             @apply text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-all duration-300;
         }
@@ -78,7 +89,7 @@
             @apply cursor-not-allowed scale-100 shadow-none;
         }
 
-        /* Base product card style */
+        /* Estilo base de la tarjeta de producto */
         .product-card-base {
             @apply bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3 flex flex-col justify-between transition-all duration-300;
         }
@@ -86,13 +97,41 @@
             @apply shadow-xl transform -translate-y-1;
         }
 
-        /* Dynamic focus ring color using CSS variable */
+        /* Color de anillo de enfoque dinámico usando variable CSS */
         .focus\:ring-current-primary:focus {
             --tw-ring-color: var(--current-primary);
         }
+
+        /* Estilo para los botones de categoría como tarjetas - UX mejorada */
+        .category-card-base {
+            @apply flex flex-col items-center justify-center p-4 rounded-xl transition-colors
+                   bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 shadow-md;
+            min-width: 140px; /* Ancho mínimo aumentado */
+            height: 160px; /* Altura aumentada */
+            flex-shrink: 0;
+            text-align: center;
+            gap: 8px; /* Espacio aumentado entre imagen y texto */
+        }
+        .category-card-base:hover {
+            @apply shadow-lg transform -translate-y-1;
+        }
+        .category-card-base img {
+            @apply w-28 h-28 rounded-full object-cover; /* Tamaño de imagen mucho más grande */
+        }
+        /* Estilo para el texto dentro de las tarjetas de categoría */
+        .category-card-base span {
+            font-size: 1rem; /* Tamaño de fuente ajustado (16px) */
+            font-weight: 600; /* Peso de fuente semibold */
+            line-height: 1.2; /* Mejor altura de línea para texto de varias líneas */
+        }
+        /* Nuevo estilo para tarjetas de categoría premium */
+        .category-card-base.premium-highlight {
+            border: 2px solid gold;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
     </style>
     <script>
-        // Tailwind CSS configuration for dark mode
+        // Configuración de Tailwind CSS para el modo oscuro
         tailwind.config = {
             darkMode: 'class',
         }
@@ -101,6 +140,9 @@
 <body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors duration-300">
     
     <div id="main-banner" class="banner rounded-b-3xl shadow-lg flex items-center justify-center relative">
+        <!-- Superposición para efecto de transición de desvanecimiento -->
+        <div id="banner-fade-overlay" class="absolute inset-0 bg-black opacity-0 rounded-b-3xl transition-opacity duration-1000 ease-in-out"></div>
+        <!-- Superposición oscura existente -->
         <div class="absolute inset-0 bg-black opacity-40 rounded-b-3xl"></div>
         <h1 id="banner-title" class="text-5xl md:text-6xl font-extrabold text-white z-10" style="text-shadow: 3px 3px 8px rgba(0,0,0,0.6);">
             Mercado Fácil
@@ -113,20 +155,20 @@
             <p id="main-subtitle" class="text-slate-600 dark:text-slate-400 mt-2"></p>
         </header>
 
-        <!-- Global Controls -->
+        <!-- Controles Globales -->
         <div class="sticky top-0 z-30 bg-slate-100/80 dark:bg-slate-900/80 backdrop-blur-sm py-4 mb-4">
             <div class="flex flex-col md:flex-row justify-center items-center gap-4">
-                <!-- Shop Switcher -->
-                <div id="shop-switcher" class="flex gap-2 bg-white dark:bg-slate-800 p-2 rounded-lg shadow-md">
-                    <!-- Shop buttons will be rendered here by JS -->
+                <!-- Selector de Tienda -->
+                <div id="shop-switcher" class="flex gap-2 bg-white dark:bg-slate-800 p-2 rounded-xl shadow-md">
+                    <!-- Los botones de la tienda se renderizarán aquí mediante JS -->
                 </div>
-                <!-- Search Bar -->
+                <!-- Barra de Búsqueda -->
                 <div class="relative w-full md:max-w-xs">
-                    <input type="search" id="search-input" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 pl-10 focus:ring-2 focus:ring-current-primary">
+                    <input type="search" id="search-input" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-2 pl-10 focus:ring-2 focus:ring-current-primary">
                     <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                 </div>
-                <!-- Language, Currency, Dark Mode Controls -->
-                <div class="flex items-center gap-4 bg-white dark:bg-slate-800 p-2 rounded-lg shadow-md">
+                <!-- Controles de Idioma, Moneda, Modo Oscuro -->
+                <div class="flex items-center gap-4 bg-white dark:bg-slate-800 p-2 rounded-xl shadow-md">
                     <select id="language-switcher" class="bg-slate-100 dark:bg-slate-700 border-none rounded-md p-1 font-semibold text-sm focus:ring-2 focus:ring-current-primary"></select>
                     <select id="currency-switcher" class="bg-slate-100 dark:bg-slate-700 border-none rounded-md p-1 font-semibold text-sm focus:ring-2 focus:ring-current-primary"></select>
                     <button id="dark-mode-toggle" class="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700">
@@ -135,12 +177,22 @@
                     </button>
                 </div>
             </div>
-             <!-- Category Filters -->
-            <div id="category-filters" class="flex gap-2 justify-center mt-4 overflow-x-auto pb-2"></div>
+             <!-- Filtros de Categoría -->
+            <div class="relative flex items-center justify-center w-full mt-4">
+                <button id="scroll-left-btn" class="hidden md:flex absolute left-0 z-10 p-2 rounded-full bg-white/80 dark:bg-slate-800/80 shadow-md hover:bg-white dark:hover:bg-slate-700 transition-colors">
+                    <i class="ph ph-caret-left text-xl text-slate-600 dark:text-slate-300"></i>
+                </button>
+                <div id="category-filters" class="flex gap-3 overflow-x-auto pb-2 px-4 w-full justify-start">
+                    <!-- Los botones de categoría se renderizarán aquí mediante JS -->
+                </div>
+                <button id="scroll-right-btn" class="hidden md:flex absolute right-0 z-10 p-2 rounded-full bg-white/80 dark:bg-slate-800/80 shadow-md hover:bg-white dark:hover:bg-slate-700 transition-colors">
+                    <i class="ph ph-caret-right text-xl text-slate-600 dark:text-slate-300"></i>
+                </button>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-8">
-            <!-- Products Column -->
+            <!-- Columna de Productos -->
             <div class="lg:col-span-2">
                 <div class="bg-white dark:bg-slate-800 p-4 md:p-6 rounded-2xl shadow-lg">
                     <h2 id="products-title" class="text-xl md:text-2xl font-semibold mb-6 flex items-center"></h2>
@@ -148,7 +200,7 @@
                 </div>
             </div>
 
-            <!-- Desktop Quote Column -->
+            <!-- Columna de Cotización de Escritorio -->
             <div class="hidden lg:block lg:col-span-1">
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg sticky top-28">
                     <h2 id="quote-title-desktop" class="text-2xl font-semibold mb-6 flex items-center"></h2>
@@ -160,7 +212,7 @@
         </div>
     </div>
 
-    <!-- Mobile Fixed Cart Bar -->
+    <!-- Barra de Carrito Fija para Móviles -->
     <div id="mobile-cart-bar" class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] flex items-center justify-between">
         <div>
             <p id="mobile-total-label" class="text-sm text-slate-500 dark:text-slate-400">Total</p>
@@ -172,7 +224,7 @@
         </button>
     </div>
 
-    <!-- Mobile Cart Modal -->
+    <!-- Modal de Carrito para Móviles -->
     <div id="mobile-cart-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40">
         <div id="modal-content" class="absolute bottom-0 left-0 right-0 bg-slate-100 dark:bg-slate-900 rounded-t-2xl p-4 max-h-[85vh] overflow-y-auto transition-transform duration-300 ease-in-out modal-enter">
             <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-200 dark:border-slate-700">
@@ -195,9 +247,16 @@
                 'foodMarket': {
                     id: 'foodMarket',
                     name: 'Food Market',
-                    banner: 'https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?q=80&w=2574&auto=format&fit=crop',
+                    banner: 'https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?q=80&w=2574&auto=format&fit=crop', // Default banner if no dynamic images
                     bannerTitle: 'Mercado Fácil',
                     logoFontClass: '', // No special font for Food Market banner
+                    bannerImages: [ // Images for dynamic banner rotation
+                        'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/01%20verduras.png',
+                        'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/02%20lacteos.png',
+                        'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/09%20despensa.png',
+                        'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/11%20bebidas.png',
+                        'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/18%20congelados.png'
+                    ],
                     products: [
                         { id: 1, name: "Arroz Blanco (1kg)", price: 5500, icon: "🍚", category: "pantry" },
                         { id: 2, name: "Leche Entera (1L)", price: 4200, icon: "🥛", category: "dairy" },
@@ -229,7 +288,7 @@
                         { id: 25, name: "Mantequilla (250g)", price: 7500, icon: "🧈", category: "dairy" },
                         { id: 26, name: "Queso Mozzarella (250g)", price: 9500, icon: "🧀", category: "dairy" },
                         { id: 27, name: "Leche Deslactosada (1L)", price: 4800, icon: "🥛", category: "dairy" },
-                        { id: 28, name: "Pasta Spaghetti (500g)", price: 4500, icon: "🍝", category: "pantry" },
+                        { id: 28, name: "Pasta Spaghetti (500g)", price: 4500, icon: "�", category: "pantry" },
                         { id: 29, name: "Lentejas (500g)", price: 4000, icon: "🫘", category: "pantry" },
                         { id: 30, name: "Frijol Cargamanto (500g)", price: 6500, icon: "🫘", category: "pantry" },
                         { id: 31, name: "Atún en Aceite", price: 5500, icon: "🥫", category: "pantry" },
@@ -268,7 +327,7 @@
                     },
                     translations: {
                         es: {
-                            pageTitle: "¡Tu Compa Ya! - Cotizador PRO",
+                            pageTitle: "¡Tu Compra Ya! - Cotizador PRO",
                             mainTitle: "¡Tu Compa Ya!",
                             mainSubtitle: "Selecciona productos para agregarlos a tu canasta de compra",
                             productsTitle: '<i class="ph ph-basket text-current-primary mr-2"></i> Productos Disponibles',
@@ -331,6 +390,19 @@
                             cleaning: 'teal',
                             personal_care: 'pink',
                             frozen: 'cyan'
+                        },
+                        // Las URLs de las imágenes de las categorías han sido actualizadas para usar la ruta de GitHub.
+                        categoryImageUrls: { 
+                            fruits_veg: 'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/01%20verduras.png',
+                            dairy: 'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/02%20lacteos2.png', 
+                            meats: 'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/03%20carnes.png', 
+                            pantry: 'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/05%20despensa.png',
+                            bakery: 'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/06%20panaderi%CC%81a.png', 
+                            drinks: 'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/07%20bebidas.png', 
+                            snacks: 'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/08%20snacks.png', 
+                            cleaning: 'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/09%20limpieza.png', 
+                            personal_care: 'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/11%20cuidado%20personal.png', 
+                            frozen: 'https://raw.githubusercontent.com/LineaMedica/compra/main/IMG/12%20congelados.png' 
                         }
                     }
                 },
@@ -434,7 +506,8 @@
                 darkMode: false,
                 searchQuery: '',
                 activeCategory: 'all',
-                activeShop: 'foodMarket' // New state for active shop
+                activeShop: 'foodMarket', // New state for active shop
+                currentBannerIndex: 0 // New state for dynamic banner
             };
 
             // --- DOM REFERENCES ---
@@ -449,6 +522,8 @@
                 return newRates;
             };
 
+            let bannerInterval; // Variable to hold the interval ID for banner rotation
+
             // --- INITIALIZATION LOGIC ---
             const init = async () => {
                 defineDomAndTranslations();
@@ -459,7 +534,7 @@
                     console.error("Failed to fetch exchange rates, using default.", error);
                 }
                 setupEventListeners();
-                updateUI();
+                updateUI(); // Initial UI render, which now includes starting banner rotation
             };
 
             // --- STATE LOGIC (localStorage) ---
@@ -469,7 +544,8 @@
                     lang: state.lang,
                     currency: state.currency,
                     darkMode: state.darkMode,
-                    activeShop: state.activeShop
+                    activeShop: state.activeShop,
+                    currentBannerIndex: state.currentBannerIndex // Save banner index
                 };
                 localStorage.setItem('foodMarketAppState', JSON.stringify(stateToSave));
             };
@@ -492,10 +568,8 @@
             const updateUI = () => {
                 const currentShop = SHOPS_CONFIG[state.activeShop];
                 
-                // Update banner
-                dom.mainBanner.style.backgroundImage = `url('${currentShop.banner}')`;
+                // Update banner title and font class
                 dom.bannerTitle.textContent = currentShop.bannerTitle;
-                // Remove existing logo font classes and add the correct one
                 dom.bannerTitle.classList.remove('logo-font');
                 if (currentShop.logoFontClass) {
                     dom.bannerTitle.classList.add(currentShop.logoFontClass);
@@ -511,6 +585,7 @@
                 renderProducts();
                 renderCart();
                 updateDarkModeToggle();
+                startBannerRotation(); // Start/restart banner rotation for the active shop
             };
 
             const updateTexts = () => {
@@ -522,7 +597,7 @@
                 dom.mainTitle.textContent = currentShopTranslations.mainTitle;
                 dom.mainSubtitle.textContent = currentShopTranslations.mainSubtitle;
                 dom.searchInput.placeholder = currentShopTranslations.searchPlaceholder;
-                dom.viewCartLabel.textContent = currentShopTranslations.viewCart;
+                dom.viewCartLabel.textContent = currentShopTranslations.viewCart; // Corrected this line to use viewCart
 
                 // Handle HTML content for titles (products, desktop quote, mobile quote)
                 dom.productsTitle.innerHTML = currentShopTranslations.productsTitle;
@@ -538,7 +613,7 @@
                     const activeClasses = `bg-${shop.theme.primaryColor}-600 text-white shadow-lg`;
                     const inactiveClasses = `bg-white dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600`;
                     return `
-                        <button data-shop="${shop.id}" class="shop-btn px-4 py-2 rounded-md font-semibold text-sm transition-colors ${isActive ? activeClasses : inactiveClasses}">
+                        <button data-shop="${shop.id}" class="shop-btn px-4 py-2 rounded-xl font-semibold text-sm transition-colors ${isActive ? activeClasses : inactiveClasses}">
                             ${shop.translations[state.lang].shopName}
                         </button>
                     `;
@@ -548,16 +623,34 @@
             const renderCategoryFilters = () => {
                 const currentShopCategories = SHOPS_CONFIG[state.activeShop].categories[state.lang];
                 const currentShopTheme = SHOPS_CONFIG[state.activeShop].theme;
+                const categoryImageUrls = currentShopTheme.categoryImageUrls || {}; // Get image URLs
 
                 dom.categoryFilters.innerHTML = Object.entries(currentShopCategories).map(([key, value]) => {
+                    const isActive = state.activeCategory === key;
                     // Determine the color for the active category button
                     const categoryColor = currentShopTheme.categoryColors[key] || currentShopTheme.primaryColor;
                     const activeClasses = `bg-${categoryColor}-600 text-white shadow-lg`;
                     const inactiveClasses = `bg-white dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600`;
                     
+                    const imageUrl = categoryImageUrls[key];
+                    let content;
+                    if (imageUrl) {
+                        content = `<img src="${imageUrl}" alt="${value}" onerror="this.onerror=null;this.src='https://placehold.co/112x112/cccccc/000000?text=IMG';" class="w-28 h-28 rounded-full object-cover"><span>${value}</span>`; // Adjusted image size
+                    } else {
+                        // For categories without images (like 'all' or butcherShop emojis)
+                        // The value already contains the emoji, e.g., "Todo 🔪"
+                        content = `<span>${value}</span>`;
+                    }
+
+                    // Determine if this card should have the premium highlight
+                    // Applying it to the 'all' category of the butcherShop as a general highlight
+                    const isPremiumShopAllCategory = state.activeShop === 'butcherShop' && key !== 'all'; // Changed to apply to all except 'all'
+                    const premiumClass = isPremiumShopAllCategory ? 'premium-highlight' : '';
+
+                    // Apply the generic card base class to all category buttons
                     return `
-                        <button data-category="${key}" class="category-btn whitespace-nowrap text-sm font-semibold px-4 py-2 rounded-full transition-colors ${state.activeCategory === key ? activeClasses : inactiveClasses}">
-                            ${value}
+                        <button data-category="${key}" class="category-card-base ${isActive ? activeClasses : inactiveClasses} ${premiumClass}">
+                            ${content}
                         </button>
                     `;
                 }).join('');
@@ -707,10 +800,17 @@
             };
 
             const handleFlyToCartAnimation = (button) => {
-                const productIconElement = button.parentElement.querySelector('.text-3xl');
-                if (!productIconElement) return;
+                const productCard = button.closest('.product-card-base');
+                if (!productCard) return;
 
-                const productIcon = productIconElement.cloneNode(true);
+                // Use the product icon if available, otherwise a generic emoji
+                const productIconElement = productCard.querySelector('.text-3xl');
+                const productIcon = productIconElement ? productIconElement.cloneNode(true) : document.createElement('span');
+                if (!productIconElement) { // If no specific icon, use a generic cart emoji
+                    productIcon.textContent = '🛒';
+                    productIcon.classList.add('text-3xl'); // Apply a size class
+                }
+
                 productIcon.classList.add('fly-to-cart');
                 document.body.appendChild(productIcon);
 
@@ -794,7 +894,7 @@
                 const currentShop = SHOPS_CONFIG[state.activeShop];
                 const t = currentShop.translations[state.lang];
                 // Use whatsappMessageTitle if available, otherwise fallback
-                let messageTitle = t.whatsappMessageTitle || `${t.mainTitle} - ${t.quoteTitleDesktop.replace(/<[^>]*>/g, '')}`;
+                let messageTitle = t.whatsappMessageTitle || `${t.mainTitle} - ${t.quoteTitleDesktop.replace(/<[^>]*>/g, '').trim()}`;
                 let message = `${messageTitle}\n\n`;
                 let subtotal = 0;
 
@@ -824,6 +924,7 @@
             // Define DOM elements and populate initial select options
             function defineDomAndTranslations() {
                 dom.mainBanner = document.getElementById('main-banner');
+                dom.bannerFadeOverlay = document.getElementById('banner-fade-overlay'); // New DOM reference
                 dom.bannerTitle = document.getElementById('banner-title');
                 dom.mainTitle = document.getElementById('main-title');
                 dom.mainSubtitle = document.getElementById('main-subtitle');
@@ -833,6 +934,8 @@
                 dom.currencySwitcher = document.getElementById('currency-switcher');
                 dom.darkModeToggle = document.getElementById('dark-mode-toggle');
                 dom.categoryFilters = document.getElementById('category-filters');
+                dom.scrollLeftBtn = document.getElementById('scroll-left-btn'); // New DOM reference
+                dom.scrollRightBtn = document.getElementById('scroll-right-btn'); // New DOM reference
                 dom.productsTitle = document.getElementById('products-title');
                 dom.productList = document.getElementById('product-list');
                 dom.quoteTitleDesktop = document.getElementById('quote-title-desktop');
@@ -872,6 +975,45 @@
                 `;
             }
 
+            // Function to start banner image rotation
+            const startBannerRotation = () => {
+                // Clear any existing interval to prevent multiple rotations
+                if (bannerInterval) {
+                    clearInterval(bannerInterval);
+                }
+
+                const currentShop = SHOPS_CONFIG[state.activeShop];
+                const bannerImages = currentShop.bannerImages;
+
+                if (bannerImages && bannerImages.length > 1) {
+                    // Set initial banner image
+                    dom.mainBanner.style.backgroundImage = `url('${bannerImages[state.currentBannerIndex]}')`;
+                    dom.bannerFadeOverlay.classList.remove('opacity-40'); // Ensure it's transparent initially
+                    dom.bannerFadeOverlay.classList.add('opacity-0');
+
+                    bannerInterval = setInterval(() => {
+                        // Fade out current image
+                        dom.bannerFadeOverlay.classList.remove('opacity-0');
+                        dom.bannerFadeOverlay.classList.add('opacity-40'); // Match the existing dark overlay opacity
+
+                        setTimeout(() => {
+                            // Change image after fade out is complete
+                            state.currentBannerIndex = (state.currentBannerIndex + 1) % bannerImages.length;
+                            dom.mainBanner.style.backgroundImage = `url('${bannerImages[state.currentBannerIndex]}')`;
+
+                            // Fade in new image
+                            dom.bannerFadeOverlay.classList.remove('opacity-40');
+                            dom.bannerFadeOverlay.classList.add('opacity-0');
+                        }, 1000); // This timeout should match the CSS transition duration for opacity
+                    }, 5000); // Change banner every 5 seconds (1s fade + 4s display)
+                } else {
+                    // If only one image or no images, just set it and don't rotate
+                    dom.mainBanner.style.backgroundImage = `url('${currentShop.banner}')`; // Fallback to single banner
+                    dom.bannerFadeOverlay.classList.remove('opacity-40'); // Ensure overlay is hidden
+                    dom.bannerFadeOverlay.classList.add('opacity-0');
+                }
+            };
+
             // --- EVENT LISTENERS SETUP ---
             function setupEventListeners() {
                 document.body.addEventListener('click', (e) => {
@@ -900,7 +1042,7 @@
                         document.documentElement.classList.toggle('dark', state.darkMode);
                         saveState();
                         updateDarkModeToggle();
-                    } else if (button.classList.contains('category-btn')) {
+                    } else if (button.classList.contains('category-card-base')) { // Use the new class name
                         state.activeCategory = category;
                         saveState();
                         renderProducts();
@@ -911,11 +1053,15 @@
                         state.searchQuery = ''; // Clear search when switching shops
                         dom.searchInput.value = ''; // Clear search input field
                         saveState();
-                        updateUI();
+                        updateUI(); // Re-render UI and restart banner for new shop
                     } else if (button.id === 'view-cart-btn') {
                         toggleModal(true);
                     } else if (button.id === 'close-modal-btn') {
                         toggleModal(false);
+                    } else if (button.id === 'scroll-left-btn') { // Handle scroll buttons
+                        dom.categoryFilters.scrollBy({ left: -200, behavior: 'smooth' }); // Scroll left by 200px
+                    } else if (button.id === 'scroll-right-btn') { // Handle scroll buttons
+                        dom.categoryFilters.scrollBy({ left: 200, behavior: 'smooth' }); // Scroll right by 200px
                     }
                 });
 
@@ -935,6 +1081,18 @@
                     state.searchQuery = e.target.value;
                     renderProducts();
                 });
+
+                // Keyboard navigation for category filters (for desktop accessibility)
+                document.addEventListener('keydown', (e) => {
+                    if (dom.categoryFilters) {
+                        const scrollAmount = 150; // Adjust scroll distance as needed
+                        if (e.key === 'ArrowLeft') {
+                            dom.categoryFilters.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                        } else if (e.key === 'ArrowRight') {
+                            dom.categoryFilters.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                        }
+                    }
+                });
             }
 
             // --- INITIALIZE THE APPLICATION ---
@@ -943,3 +1101,4 @@
     </script>
 </body>
 </html>
+�
